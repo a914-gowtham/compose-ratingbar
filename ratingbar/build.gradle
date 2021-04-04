@@ -10,9 +10,9 @@ afterEvaluate {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.gowtham.compose-ratingbar'
-                artifactId = 'compose-ratingbar'
-                version = '1.0.0.alpha05'
+                groupId = 'com.gowtham.composeratingbar'
+                artifactId = 'composeratingbar'
+                version = '1.0.0.alpha07'
             }
         }
     }
@@ -38,8 +38,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
