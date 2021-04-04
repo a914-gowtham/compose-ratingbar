@@ -4,10 +4,6 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.gowthan.compose-ratingbar'
-version = '1.0.0.alpha03'
-
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
