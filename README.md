@@ -16,32 +16,32 @@ repositories {
 
 // App build.gradle
 dependencies {
-   implementation 'com.github.a914-gowtham:compose-ratingbar:1.0.1-alpha02'
+   implementation 'com.github.a914-gowtham:compose-ratingbar:1.0.1'
 }
 ```
 
 ## Usage 
 ```kotlin
-    var value: Int by rememberSaveable { mutableStateOf(3) }  //initial rating value is 3 here
-  Column(){
+    var value: Float by rememberSaveable { mutableStateOf(3.2f) }  //initial rating value is 3.2 here
+    Column(){
        RatingBar(value = value,onRatingChanged = {
                 value=it
                 Log.d("TAG", "onRatingChanged: $it")
             })
-        }
+     }
 ```
 
 It has 10 params with default value as shown below
 ```kotlin
 fun RatingBar(
-    value: Int = 0,
-    numStars: Int = 5, size: Dp = 34.dp, padding: Dp = 3.dp,
+    value: Float = 0f,
+    numStars: Int = 5, size: Dp = 26.dp, padding: Dp = 2.dp,
     isIndicator: Boolean = false, activeColor: Color = Color(0xffffd740),
     inactiveColor: Color = Color(0xffffecb3),
-    stepSize: Float = 1f, onRatingChanged: (Int) -> Unit,
-    @DrawableRes imgResId: Int=R.drawable.rounded_point_star
+    stepSize: StepSize = StepSize.ONE, onRatingChanged: (Float) -> Unit,
+    ratingBarStyle: RatingBarStyle=RatingBarStyle.Normal
 )
 ```
 ## Library Info
-* Current version of this library does not support Stepsize except Stepsize 1f. It is under development
+* Current version of the library only supports Stepsize 1f and 0.5f
 
