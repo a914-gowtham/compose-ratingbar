@@ -18,8 +18,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.gowtham.compose_ratingbar.ui.theme.ComposeRatingBarTheme
 import com.gowtham.ratingbar.RatingBar
+import com.gowtham.ratingbar.RatingBarStyle
+import com.gowtham.ratingbar.StepSize
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +37,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp() {
-    var rating: Int by rememberSaveable { mutableStateOf(0) }
+    var rating: Float by rememberSaveable { mutableStateOf(4f) }
+    var highLightedRating: Float by rememberSaveable { mutableStateOf(4f) }
     ComposeRatingBarTheme {
         Surface(color = MaterialTheme.colors.background) {
             Column(
@@ -43,9 +48,13 @@ fun MyApp() {
                 verticalArrangement = Arrangement.Center,
             ) {
                 RatingBar(value = rating, onRatingChanged = {
-                    rating = it
+                    rating=it
                     Log.d("TAG", "onRatingChanged: $it")
                 })
+                RatingBar(value = highLightedRating, onRatingChanged = {
+                    highLightedRating=it
+                    Log.d("TAG", "onRatingChanged: $it")
+                },ratingBarStyle = RatingBarStyle.HighLighted)
             }
 
         }
