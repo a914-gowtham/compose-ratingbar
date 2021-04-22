@@ -6,10 +6,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.horizontalDrag
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
@@ -20,9 +17,14 @@ import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gowtham.ratingbar.RatingStar
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToInt
 
@@ -35,6 +37,9 @@ sealed class RatingBarStyle{
     object Normal : RatingBarStyle()
     object HighLighted : RatingBarStyle()
 }
+
+val StarRatingKey = SemanticsPropertyKey<Float>("StarRating")
+var SemanticsPropertyReceiver.starRating by StarRatingKey
 
 
 fun Float.stepSized(stepSize: StepSize): Float{
@@ -120,7 +125,7 @@ fun RatingBar(
                             if (change != null) {
                                 horizontalDrag(change.id) {
                                     val originalX = offsetX.value
-                                    if((originalX + it.positionChange().x)<0){
+                                    if ((originalX + it.positionChange().x) < 0) {
                                         onRatingChanged(0f)
                                         return@horizontalDrag
                                     }
@@ -149,10 +154,10 @@ fun RatingBar(
                     }
                 }
             }) {
+            Log.d("TAG", "RatingBar: $value")
             ComposeStars(
                 value, numStars, size, padding, activeColor,
-                inactiveColor,ratingBarStyle
-            )
+                inactiveColor,ratingBarStyle)
         }
     }
 
@@ -170,29 +175,32 @@ fun ComposeStars(
     val ratingPerStar = 1f
     var remainingRating = value
 
-    for (i in 1 .. numStars) {
-        val starRating = when {
-            remainingRating == 0f -> {
-                0f
+    Row(modifier = Modifier.semantics { starRating=value }) {
+        for (i in 1 .. numStars) {
+            val starRating = when {
+                remainingRating == 0f -> {
+                    0f
+                }
+                remainingRating >= ratingPerStar -> {
+                    remainingRating -= ratingPerStar
+                    1f
+                }
+                else -> {
+                    val fraction = remainingRating / ratingPerStar
+                    remainingRating = 0f
+                    fraction
+                }
             }
-            remainingRating >= ratingPerStar -> {
-                remainingRating -= ratingPerStar
-                1f
-            }
-            else -> {
-                val fraction = remainingRating / ratingPerStar
-                remainingRating = 0f
-                fraction
-            }
+            RatingStar(
+                fraction = starRating,
+                modifier = Modifier
+                    .padding(all = padding)
+                    .size(size = size).testTag("RatingStar"),
+                activeColor,
+                inactiveColor,
+                ratingBarStyle
+            )
         }
-        RatingStar(
-            fraction = starRating,
-            modifier = Modifier
-                .padding(all = padding)
-                .size(size = size),
-            activeColor,
-            inactiveColor,
-            ratingBarStyle
-        )
+
     }
 }
