@@ -26,12 +26,10 @@ class RatingBarTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    val rating = 3.2f  // State that can cause recompositions
-
     @Test
     fun ratingFirstSetup() {
         composeTestRule
-            .onNode(SemanticsMatcher.expectValue(StarRatingKey, rating)) // 2015-10-21
+            .onNode(SemanticsMatcher.expectValue(StarRatingKey, MainActivity.initialRating)) // 2015-10-21
             .assertExists()
     }
 
@@ -44,7 +42,7 @@ class RatingBarTest {
     @Test
     fun dragHorizontally() {
         composeTestRule
-            .onNode(SemanticsMatcher.expectValue(StarRatingKey, rating)) // 2015-10-21
+            .onNode(SemanticsMatcher.keyIsDefined(StarRatingKey)) // 2015-10-21
             .performGesture { swipe(
                 Offset(x = 0f,y = 0f),Offset(x = 200f,y = 0f),
                 durationMillis = 4000L) }

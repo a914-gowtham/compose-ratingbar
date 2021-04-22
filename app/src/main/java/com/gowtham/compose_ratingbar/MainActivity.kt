@@ -16,10 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gowtham.compose_ratingbar.MainActivity.Companion.initialRating
 import com.gowtham.compose_ratingbar.ui.theme.ComposeRatingBarTheme
 import com.gowtham.ratingbar.RatingBar
 
 class MainActivity : ComponentActivity() {
+
+    companion object{
+        const val initialRating=3.2f
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -40,7 +45,7 @@ fun MyApp() {
 
 @Composable
 fun MainScreen() {
-    var rating: Float by rememberSaveable { mutableStateOf(3.2f) }
+    var rating: Float by rememberSaveable { mutableStateOf(initialRating) }
 
     Column(
         modifier =
