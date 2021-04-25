@@ -1,39 +1,34 @@
 package com.gowtham.ratingbar
 
 import android.util.Log
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gowtham.ratingbar.RatingStar
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToInt
 
-sealed class StepSize{
+sealed class StepSize {
     object ONE : StepSize()
     object HALF : StepSize()
 }
 
-sealed class RatingBarStyle{
+sealed class RatingBarStyle {
     object Normal : RatingBarStyle()
     object HighLighted : RatingBarStyle()
 }
@@ -42,40 +37,39 @@ val StarRatingKey = SemanticsPropertyKey<Float>("StarRating")
 var SemanticsPropertyReceiver.starRating by StarRatingKey
 
 
-fun Float.stepSized(stepSize: StepSize): Float{
-   return if(stepSize is StepSize.ONE)
+fun Float.stepSized(stepSize: StepSize): Float {
+    return if (stepSize is StepSize.ONE)
         this.roundToInt().toFloat()
-    else{
-        var value=this.toInt().toFloat()
-         if(this<value.plus(0.5)) {
-             value=value.plus(0.5).toFloat()
-             value
-         }
-       else
-           this.roundToInt().toFloat()
+    else {
+        var value = this.toInt().toFloat()
+        if (this < value.plus(0.5)) {
+            value = value.plus(0.5).toFloat()
+            value
+        } else
+            this.roundToInt().toFloat()
     }
 }
 
 object RatingBar {
 
-/**
-*  @return calculated stars count that should be selected
-* */
+    /**
+     *  @return calculated stars count that should be selected
+     * */
     fun calculateStars(
         draggedWidth: Float, width: Float,
         numStars: Int, padding: Int
     ): Float {
         var overAllComposeWidth = width
         val spacerWidth = numStars * (2 * padding)
-    Log.d("TAG", "overAllComposeWidth: $overAllComposeWidth")
-    Log.d("TAG", "spacerWidth: $spacerWidth")
-    Log.d("TAG", "padding: $padding")
-    Log.d("TAG", "draggedWidth: $draggedWidth")
+        Log.d("TAG", "overAllComposeWidth: $overAllComposeWidth")
+        Log.d("TAG", "spacerWidth: $spacerWidth")
+        Log.d("TAG", "padding: $padding")
+        Log.d("TAG", "draggedWidth: $draggedWidth")
 
-    //removing padding's width
+        //removing padding's width
         overAllComposeWidth -= spacerWidth
-    Log.d("TAG", "overAllComposeWidth--: $overAllComposeWidth")
-    return if (draggedWidth != 0f)
+        Log.d("TAG", "overAllComposeWidth--: $overAllComposeWidth")
+        return if (draggedWidth != 0f)
             ((draggedWidth / overAllComposeWidth) * numStars)
         else 0f
     }
@@ -88,23 +82,32 @@ object RatingBar {
  * @param size for each star
  * @param padding for set padding to each star
  * @param isIndicator Whether this rating bar is only an indicator
- * @param imgResId - custom icon from drawable resource
+ * @param activeColor A [Color] representing an active star (or part of it)
+ * @param inactiveColor A [Color] representing a inactive star (or part of it)
+ * @param stepSize Minimum value to trigger a change
+ * @param ratingBarStyle Can be [RatingBarStyle.Normal] or [RatingBarStyle.HighLighted]
+ * @param onRatingChanged A function to be called when the value changes
  */
 @Composable
 fun RatingBar(
+    modifier: Modifier = Modifier,
     value: Float = 0f,
-    numStars: Int = 5, size: Dp = 26.dp, padding: Dp = 2.dp,
-    isIndicator: Boolean = false, activeColor: Color = Color(0xffffd740),
+    numStars: Int = 5,
+    size: Dp = 26.dp,
+    padding: Dp = 2.dp,
+    isIndicator: Boolean = false,
+    activeColor: Color = Color(0xffffd740),
     inactiveColor: Color = Color(0xffffecb3),
-    stepSize: StepSize = StepSize.ONE, onRatingChanged: (Float) -> Unit,
-    ratingBarStyle: RatingBarStyle=RatingBarStyle.Normal
+    stepSize: StepSize = StepSize.ONE,
+    ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
+    onRatingChanged: (Float) -> Unit
 ) {
     val offsetX = remember { mutableStateOf(0f) }
     var width by remember { mutableStateOf(0f) }
     var lastSelectedStarWidth by remember { mutableStateOf(0f) }
 
     Surface {
-        Row(modifier = Modifier
+        Row(modifier = modifier
             .onSizeChanged { width = it.width.toFloat() }
             .pointerInput(Unit) {
                 if (isIndicator)
@@ -157,7 +160,8 @@ fun RatingBar(
             Log.d("TAG", "RatingBar: $value")
             ComposeStars(
                 value, numStars, size, padding, activeColor,
-                inactiveColor,ratingBarStyle)
+                inactiveColor, ratingBarStyle
+            )
         }
     }
 
@@ -170,13 +174,14 @@ fun ComposeStars(
     size: Dp,
     padding: Dp,
     activeColor: Color,
-    inactiveColor: Color,ratingBarStyle: RatingBarStyle) {
+    inactiveColor: Color, ratingBarStyle: RatingBarStyle
+) {
 
     val ratingPerStar = 1f
     var remainingRating = value
 
-    Row(modifier = Modifier.semantics { starRating=value }) {
-        for (i in 1 .. numStars) {
+    Row(modifier = Modifier.semantics { starRating = value }) {
+        for (i in 1..numStars) {
             val starRating = when {
                 remainingRating == 0f -> {
                     0f
@@ -194,8 +199,12 @@ fun ComposeStars(
             RatingStar(
                 fraction = starRating,
                 modifier = Modifier
-                    .padding(all = padding)
-                    .size(size = size).testTag("RatingStar"),
+                    .padding(
+                        start = if (i > 1) padding else 0.dp,
+                        end = if (i < numStars) padding else 0.dp
+                    )
+                    .size(size = size)
+                    .testTag("RatingStar"),
                 activeColor,
                 inactiveColor,
                 ratingBarStyle

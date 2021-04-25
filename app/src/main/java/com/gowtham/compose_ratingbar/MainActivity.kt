@@ -53,10 +53,10 @@ fun MainScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        RatingBar(value = rating, onRatingChanged = {
+        RatingBar(value = rating) {
             rating=it
             Log.d("TAG", "onRatingChanged: $it")
-        })
+        }
         Spacer(modifier = Modifier.requiredSize(4.dp))
     }
 }
