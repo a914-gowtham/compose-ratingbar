@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gowtham.ratingbar.RatingBarUtils.stepSized
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.roundToInt
 
@@ -36,45 +37,6 @@ sealed class RatingBarStyle {
 val StarRatingKey = SemanticsPropertyKey<Float>("StarRating")
 var SemanticsPropertyReceiver.starRating by StarRatingKey
 
-
-fun Float.stepSized(stepSize: StepSize): Float {
-    return if (stepSize is StepSize.ONE)
-        this.roundToInt().toFloat()
-    else {
-        var value = this.toInt().toFloat()
-        if (this < value.plus(0.5)) {
-            value = value.plus(0.5).toFloat()
-            value
-        } else
-            this.roundToInt().toFloat()
-    }
-}
-
-object RatingBar {
-
-    /**
-     *  @return calculated stars count that should be selected
-     * */
-    fun calculateStars(
-        draggedWidth: Float, width: Float,
-        numStars: Int, padding: Int
-    ): Float {
-        var overAllComposeWidth = width
-        val spacerWidth = numStars * (2 * padding)
-        Log.d("TAG", "overAllComposeWidth: $overAllComposeWidth")
-        Log.d("TAG", "spacerWidth: $spacerWidth")
-        Log.d("TAG", "padding: $padding")
-        Log.d("TAG", "draggedWidth: $draggedWidth")
-
-        //removing padding's width
-        overAllComposeWidth -= spacerWidth
-        Log.d("TAG", "overAllComposeWidth--: $overAllComposeWidth")
-        return if (draggedWidth != 0f)
-            ((draggedWidth / overAllComposeWidth) * numStars)
-        else 0f
-    }
-
-}
 
 /**
  * @param value is current selected rating count
@@ -138,7 +100,7 @@ fun RatingBar(
                                     offsetX.value = newValue
                                     lastSelectedStarWidth = offsetX.value
                                     val calculatedStars =
-                                        RatingBar.calculateStars(
+                                        RatingBarUtils.calculateStars(
                                             lastSelectedStarWidth, width,
                                             numStars, padding.value.toInt()
                                         )
@@ -147,7 +109,7 @@ fun RatingBar(
                             } else {
                                 lastSelectedStarWidth = down.position.x
                                 val calculatedStars =
-                                    RatingBar.calculateStars(
+                                    RatingBarUtils.calculateStars(
                                         lastSelectedStarWidth, width,
                                         numStars, padding.value.toInt()
                                     )

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.gowtham.compose_ratingbar.MainActivity.Companion.initialRating
 import com.gowtham.compose_ratingbar.ui.theme.ComposeRatingBarTheme
 import com.gowtham.ratingbar.RatingBar
+import com.gowtham.ratingbar.StepSize
 
 class MainActivity : ComponentActivity() {
 
@@ -53,7 +54,7 @@ fun MainScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        RatingBar(value = rating) {
+        RatingBar(value = rating, stepSize = StepSize.HALF) {
             rating=it
             Log.d("TAG", "onRatingChanged: $it")
         }
