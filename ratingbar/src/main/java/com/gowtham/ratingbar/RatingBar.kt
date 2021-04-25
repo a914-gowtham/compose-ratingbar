@@ -82,7 +82,11 @@ object RatingBar {
  * @param size for each star
  * @param padding for set padding to each star
  * @param isIndicator Whether this rating bar is only an indicator
- * @param imgResId - custom icon from drawable resource
+ * @param activeColor A [Color] representing an active star (or part of it)
+ * @param inactiveColor A [Color] representing a inactive star (or part of it)
+ * @param stepSize Minimum value to trigger a change
+ * @param ratingBarStyle Can be [RatingBarStyle.Normal] or [RatingBarStyle.HighLighted]
+ * @param onRatingChanged A function to be called when the value changes
  */
 @Composable
 fun RatingBar(
