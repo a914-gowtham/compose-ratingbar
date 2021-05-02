@@ -1,28 +1,24 @@
 package com.gowtham.ratingbar
 
 import android.util.Log
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
-import androidx.compose.foundation.gestures.forEachGesture
-import androidx.compose.foundation.gestures.horizontalDrag
+import android.view.MotionEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.consumePositionChange
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.gowtham.ratingbar.RatingBarUtils.stepSized
-import kotlinx.coroutines.coroutineScope
-import kotlin.math.roundToInt
 
 sealed class StepSize {
     object ONE : StepSize()
@@ -34,6 +30,7 @@ sealed class RatingBarStyle {
     object HighLighted : RatingBarStyle()
 }
 
+//For ui testing
 val StarRatingKey = SemanticsPropertyKey<Float>("StarRating")
 var SemanticsPropertyReceiver.starRating by StarRatingKey
 
@@ -48,6 +45,7 @@ var SemanticsPropertyReceiver.starRating by StarRatingKey
  * @param inactiveColor A [Color] representing a inactive star (or part of it)
  * @param stepSize Minimum value to trigger a change
  * @param ratingBarStyle Can be [RatingBarStyle.Normal] or [RatingBarStyle.HighLighted]
+ * @param onRatingDone triggers when the single click or dragging is done and lastRating value is passed in the param
  * @param onRatingChanged A function to be called when the value changes
  */
 @Composable
@@ -62,64 +60,47 @@ fun RatingBar(
     inactiveColor: Color = Color(0xffffecb3),
     stepSize: StepSize = StepSize.ONE,
     ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
+    onRatingDone: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
 ) {
-    val offsetX = remember { mutableStateOf(0f) }
-    var width by remember { mutableStateOf(0f) }
-    var lastSelectedStarWidth by remember { mutableStateOf(0f) }
+    var rowSize by remember { mutableStateOf(Size.Zero) }
+    var lastKnownValue=0f
 
     Surface {
         Row(modifier = modifier
-            .onSizeChanged { width = it.width.toFloat() }
-            .pointerInput(Unit) {
-                if (isIndicator)
-                    return@pointerInput
-                coroutineScope {
-                    forEachGesture {
-                        awaitPointerEventScope {
-                            val down = awaitFirstDown()
-                            val change =
-                                awaitHorizontalTouchSlopOrCancellation(down.id) { change, over ->
-                                    val originalX = offsetX.value
-                                    val newValue =
-                                        (originalX + over).coerceIn(0f, width - 50.dp.toPx())
-                                    change.consumePositionChange()
-                                    offsetX.value = newValue
-                                }
-
-                            if (change != null) {
-                                horizontalDrag(change.id) {
-                                    val originalX = offsetX.value
-                                    if ((originalX + it.positionChange().x) < 0) {
-                                        onRatingChanged(0f)
-                                        return@horizontalDrag
-                                    }
-                                    val newValue = (originalX + it.positionChange().x)
-                                        .coerceIn(0f, width - 2.dp.toPx())
-                                    it.consumePositionChange()
-                                    offsetX.value = newValue
-                                    lastSelectedStarWidth = offsetX.value
-                                    val calculatedStars =
-                                        RatingBarUtils.calculateStars(
-                                            lastSelectedStarWidth, width,
-                                            numStars, padding.value.toInt()
-                                        )
-                                    onRatingChanged(calculatedStars.stepSized(stepSize))
-                                }
-                            } else {
-                                lastSelectedStarWidth = down.position.x
-                                val calculatedStars =
-                                    RatingBarUtils.calculateStars(
-                                        lastSelectedStarWidth, width,
-                                        numStars, padding.value.toInt()
-                                    )
-                                onRatingChanged(calculatedStars.stepSized(stepSize))
-                            }
-                        }
+            .onSizeChanged { rowSize = it.toSize() }
+            .pointerInteropFilter {
+                when (it.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                  //handling when single click happens
+                        val calculatedStars =
+                            RatingBarUtils.calculateStars(
+                                it.x, rowSize.width,
+                                numStars, padding.value.toInt()
+                            )
+                        val rating=calculatedStars.stepSized(stepSize)
+                        onRatingChanged(rating)
+                        lastKnownValue=rating
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                   //handling while dragging event
+                        val x1= it.x.coerceIn(0f, rowSize.width)
+                        val calculatedStars =
+                            RatingBarUtils.calculateStars(
+                                x1, rowSize.width,
+                                numStars, padding.value.toInt()
+                            )
+                        val rating=calculatedStars.stepSized(stepSize)
+                        onRatingChanged(rating)
+                        lastKnownValue=rating
+                    }
+                    MotionEvent.ACTION_UP -> {
+                    //when the click or drag is released
+                        onRatingDone(lastKnownValue)
                     }
                 }
+                true
             }) {
-            Log.d("TAG", "RatingBar: $value")
             ComposeStars(
                 value, numStars, size, padding, activeColor,
                 inactiveColor, ratingBarStyle
@@ -174,4 +155,16 @@ fun ComposeStars(
         }
 
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RatingBarPreview() {
+    var rating by remember { mutableStateOf(3.3f) }
+
+    RatingBar(value = rating,onRatingDone = {
+        Log.d("TAG", "onRatingDone: $it")
+    },onRatingChanged = {
+        rating=it
+    })
 }

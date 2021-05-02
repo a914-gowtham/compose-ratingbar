@@ -42,12 +42,12 @@ class RatingBarTest {
     @Test
     fun dragHorizontally() {
         composeTestRule
-            .onNode(SemanticsMatcher.keyIsDefined(StarRatingKey)) // 2015-10-21
+            .onNode(SemanticsMatcher.keyIsDefined(StarRatingKey))
             .performGesture { swipe(
                 Offset(x = 0f,y = 0f),Offset(x = 200f,y = 0f),
                 durationMillis = 4000L) }
         composeTestRule
-            .onNode(SemanticsMatcher.expectValue(StarRatingKey, 2f)) // 2015-10-21
+            .onNode(SemanticsMatcher.expectValue(StarRatingKey, 2f))
             .assertExists()
     }
 

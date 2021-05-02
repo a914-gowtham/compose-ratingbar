@@ -15,14 +15,9 @@ object RatingBarUtils {
     ): Float {
         var overAllComposeWidth = width
         val spacerWidth = numStars * (2 * padding)
-        Log.d("TAG", "overAllComposeWidth: $overAllComposeWidth")
-        Log.d("TAG", "spacerWidth: $spacerWidth")
-        Log.d("TAG", "padding: $padding")
-        Log.d("TAG", "draggedWidth: $draggedWidth")
 
         //removing padding's width
         overAllComposeWidth -= spacerWidth
-        Log.d("TAG", "overAllComposeWidth--: $overAllComposeWidth")
         return if (draggedWidth != 0f)
             ((draggedWidth / overAllComposeWidth) * numStars)
         else 0f
