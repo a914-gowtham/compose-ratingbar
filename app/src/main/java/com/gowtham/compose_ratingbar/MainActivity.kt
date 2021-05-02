@@ -25,6 +25,7 @@ import com.gowtham.compose_ratingbar.MainActivity.Companion.initialRating
 import com.gowtham.compose_ratingbar.ui.theme.ComposeRatingBarTheme
 import com.gowtham.ratingbar.LogMessage
 import com.gowtham.ratingbar.RatingBar
+import com.gowtham.ratingbar.RatingBarStyle
 import com.gowtham.ratingbar.StepSize
 
 class MainActivity : ComponentActivity() {
@@ -60,12 +61,9 @@ fun MainScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        RatingBar(value = rating,onRatingDone = {
-            Log.d("TAG", "onRatingDone: $it")
-        },onRatingChanged = {
+        RatingBar(value = rating,onRatingChanged = {
             rating=it
         })
-        Spacer(modifier = Modifier.requiredSize(4.dp))
     }
 }
 
