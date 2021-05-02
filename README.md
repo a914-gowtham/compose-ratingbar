@@ -31,7 +31,7 @@ dependencies {
      }
 ```
 
-It has 10 params with default value as shown below
+Ratingbar composable function has 11 params with default value as shown below
 ```kotlin
 fun RatingBar(
     modifier: Modifier = Modifier,
