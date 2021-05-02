@@ -16,7 +16,7 @@ repositories {
 
 // App build.gradle
 dependencies {
-   implementation 'com.github.a914-gowtham:compose-ratingbar:1.0.1'
+   implementation 'com.github.a914-gowtham:compose-ratingbar:1.0.3'
 }
 ```
 
@@ -34,12 +34,14 @@ dependencies {
 It has 10 params with default value as shown below
 ```kotlin
 fun RatingBar(
+    modifier: Modifier = Modifier,
     value: Float = 0f,
     numStars: Int = 5, size: Dp = 26.dp, padding: Dp = 2.dp,
     isIndicator: Boolean = false, activeColor: Color = Color(0xffffd740),
     inactiveColor: Color = Color(0xffffecb3),
-    stepSize: StepSize = StepSize.ONE, onRatingChanged: (Float) -> Unit,
-    ratingBarStyle: RatingBarStyle=RatingBarStyle.Normal
+    stepSize: StepSize = StepSize.ONE, 
+    ratingBarStyle: RatingBarStyle=RatingBarStyle.Normal,
+    onRatingChanged: (Float) -> Unit
 )
 ```
 
