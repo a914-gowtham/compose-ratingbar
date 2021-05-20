@@ -3,7 +3,7 @@ A ratingbar for jetpack compose
 
 [![](https://jitpack.io/v/a914-gowtham/compose-ratingbar.svg)](https://jitpack.io/#a914-gowtham/compose-ratingbar)
 
-<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/demo_1.gif" width="360" height="260"/>
+<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/demo_1.gif" width="340" height="260"/>
 
 Download
 --------
