@@ -45,9 +45,6 @@ fun RatingBar(
 )
 ```
 
-## Acknowledgement
-* In version 1.0.1 some major changes were referenced from [compose-rating-bar](https://github.com/jsachica/compose-rating-bar)
-
 ## Library Info
 * Current version of the library only supports Stepsize 1f and 0.5f
 
