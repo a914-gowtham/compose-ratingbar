@@ -63,7 +63,7 @@ fun MainScreen() {
     ) {
         RatingBar(value = rating,onRatingChanged = {
             rating=it
-        })
+        },ratingBarStyle = RatingBarStyle.HighLighted )
     }
 }
 
