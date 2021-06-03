@@ -1,8 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+//    id 'com.vanniktech.maven.publish'
     id 'maven-publish'
-    id 'com.vanniktech.maven.publish'
 }
 
 afterEvaluate {
@@ -19,13 +19,13 @@ afterEvaluate {
     }
 }
 
-allprojects {
+/*allprojects {
     plugins.withId("com.vanniktech.maven.publish") {
         mavenPublish {
             sonatypeHost = "S01"
         }
     }
-}
+}*/
 
 android {
     compileSdkVersion 30
