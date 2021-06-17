@@ -4,9 +4,11 @@ import android.view.MotionEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
@@ -46,6 +48,7 @@ var SemanticsPropertyReceiver.starRating by StarRatingKey
  * @param ratingBarStyle Can be [RatingBarStyle.Normal] or [RatingBarStyle.HighLighted]
  * @param onRatingChanged A function to be called when the click or drag is released and rating value is passed
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RatingBar(
     modifier: Modifier = Modifier,
