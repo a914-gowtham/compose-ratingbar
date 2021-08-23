@@ -60,52 +60,50 @@ fun RatingBar(
     activeColor: Color = Color(0xffffd740),
     inactiveColor: Color = Color(0xffffecb3),
     stepSize: StepSize = StepSize.ONE,
+    hideInactiveStars: Boolean= false,
     ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
     onRatingChanged: (Float) -> Unit
 ) {
     var rowSize by remember { mutableStateOf(Size.Zero) }
     var rating by remember { mutableStateOf(value) }
 
-    Surface {
-        Row(modifier = modifier
-            .onSizeChanged { rowSize = it.toSize() }
-            .pointerInteropFilter {
-                if(isIndicator)
-                    return@pointerInteropFilter false
-                when (it.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                  //handling when single click happens
-                        val calculatedStars =
-                            RatingBarUtils.calculateStars(
-                                it.x, rowSize.width,
-                                numStars, padding.value.toInt()
-                            )
-                        rating=calculatedStars.stepSized(stepSize)
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                   //handling while dragging event
-                        val x1= it.x.coerceIn(0f, rowSize.width)
-                        val calculatedStars =
-                            RatingBarUtils.calculateStars(
-                                x1, rowSize.width,
-                                numStars, padding.value.toInt()
-                            )
-                        rating=calculatedStars.stepSized(stepSize)
-                    }
-                    MotionEvent.ACTION_UP -> {
-                    //when the click or drag is released
-                        onRatingChanged(rating)
-                    }
+    Row(modifier = modifier
+        .onSizeChanged { rowSize = it.toSize() }
+        .pointerInteropFilter {
+            if (isIndicator || hideInactiveStars)
+                return@pointerInteropFilter false
+            when (it.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //handling when single click happens
+                    val calculatedStars =
+                        RatingBarUtils.calculateStars(
+                            it.x, rowSize.width,
+                            numStars, padding.value.toInt()
+                        )
+                    rating = calculatedStars.stepSized(stepSize)
                 }
-                true
-            }) {
-            ComposeStars(
-                rating, numStars, size, padding, activeColor,
-                inactiveColor, ratingBarStyle
-            )
-        }
+                MotionEvent.ACTION_MOVE -> {
+                    //handling while dragging event
+                    val x1 = it.x.coerceIn(0f, rowSize.width)
+                    val calculatedStars =
+                        RatingBarUtils.calculateStars(
+                            x1, rowSize.width,
+                            numStars, padding.value.toInt()
+                        )
+                    rating = calculatedStars.stepSized(stepSize)
+                }
+                MotionEvent.ACTION_UP -> {
+                    //when the click or drag is released
+                    onRatingChanged(rating)
+                }
+            }
+            true
+        }) {
+        ComposeStars(
+            rating, numStars, size, padding, activeColor,
+            inactiveColor,false, ratingBarStyle
+        )
     }
-
 }
 
 @Composable
@@ -115,7 +113,9 @@ fun ComposeStars(
     size: Dp,
     padding: Dp,
     activeColor: Color,
-    inactiveColor: Color, ratingBarStyle: RatingBarStyle
+    inactiveColor: Color,
+    hideInactiveStars: Boolean,
+    ratingBarStyle: RatingBarStyle
 ) {
 
     val ratingPerStar = 1f
@@ -137,6 +137,8 @@ fun ComposeStars(
                     fraction
                 }
             }
+            if(hideInactiveStars && starRating==0.0f)
+                break
             RatingStar(
                 fraction = starRating,
                 modifier = Modifier
@@ -160,7 +162,7 @@ fun ComposeStars(
 fun RatingBarPreview() {
     var rating by remember { mutableStateOf(3.3f) }
 
-    RatingBar(value = rating,onRatingChanged = {
-        rating=it
+    RatingBar(value = rating, onRatingChanged = {
+        rating = it
     })
 }
