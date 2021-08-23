@@ -4,7 +4,7 @@ import android.util.Log
 
 object LogMessage {
 
-    private val logVisible = true
+    private const val logVisible = false
 
     internal fun v(msg: String) {
         if (logVisible) Log.v("Compose-Ratingbar :",msg)
