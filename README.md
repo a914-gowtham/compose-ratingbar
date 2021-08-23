@@ -27,25 +27,37 @@ dependencies {
 
 ## Usage 
 ```kotlin
-    var value: Float by rememberSaveable { mutableStateOf(3.2f) }  //initial rating value is 3.2 here
-    Column(){
-       RatingBar(value = value){
-                value=it
-                Log.d("TAG", "onRatingChanged: $it")
-            }
-     }
+    var rating: Float by rememberSaveable { mutableStateOf(initialRating) }
+    Column(
+        modifier =
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        RatingBar(value = rating,
+            ratingBarStyle = RatingBarStyle.HighLighted, onValueChange = {
+            rating = it
+        }) {
+            Log.d("TAG", "onRatingChanged: $it")
+        }
+    }
 ```
 
-Ratingbar composable function has 11 params with default value as shown below
+Ratingbar composable function has 13 params with default value as shown below
 ```kotlin
 fun RatingBar(
     modifier: Modifier = Modifier,
     value: Float = 0f,
-    numStars: Int = 5, size: Dp = 26.dp, padding: Dp = 2.dp,
-    isIndicator: Boolean = false, activeColor: Color = Color(0xffffd740),
+    numStars: Int = 5,
+    size: Dp = 26.dp,
+    padding: Dp = 2.dp,
+    isIndicator: Boolean = false,
+    activeColor: Color = Color(0xffffd740),
     inactiveColor: Color = Color(0xffffecb3),
-    stepSize: StepSize = StepSize.ONE, 
-    ratingBarStyle: RatingBarStyle=RatingBarStyle.Normal,
+    stepSize: StepSize = StepSize.ONE,
+    hideInactiveStars: Boolean = false,
+    ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
+    onValueChange: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
 )
 ```
