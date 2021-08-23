@@ -18,9 +18,9 @@ repositories {
 
 // App build.gradle
 dependencies {
-   implementation 'com.github.a914-gowtham:compose-ratingbar:1.1.0'
+   implementation 'com.github.a914-gowtham:compose-ratingbar:1.1.1'
   //mavenCentral
-  // implementation 'io.github.a914-gowtham:compose-ratingbar:1.1.0'
+  // implementation 'io.github.a914-gowtham:compose-ratingbar:1.1.1'
 
 }
 ```
