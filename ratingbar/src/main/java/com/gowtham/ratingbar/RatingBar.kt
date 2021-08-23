@@ -1,9 +1,11 @@
 package com.gowtham.ratingbar
 
+import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -15,11 +17,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.gowtham.ratingbar.RatingBarUtils.stepSized
+import kotlin.math.absoluteValue
 
 sealed class StepSize {
     object ONE : StepSize()
@@ -60,12 +64,13 @@ fun RatingBar(
     activeColor: Color = Color(0xffffd740),
     inactiveColor: Color = Color(0xffffecb3),
     stepSize: StepSize = StepSize.ONE,
-    hideInactiveStars: Boolean= false,
+    hideInactiveStars: Boolean = false,
     ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
+    onValueChange: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
 ) {
     var rowSize by remember { mutableStateOf(Size.Zero) }
-    var rating by remember { mutableStateOf(value) }
+    var changedValue by remember { mutableStateOf(0f) }
 
     Row(modifier = modifier
         .onSizeChanged { rowSize = it.toSize() }
@@ -80,7 +85,9 @@ fun RatingBar(
                             it.x, rowSize.width,
                             numStars, padding.value.toInt()
                         )
-                    rating = calculatedStars.stepSized(stepSize)
+                    val newValue = calculatedStars.stepSized(stepSize)
+                    onValueChange(newValue)
+                    onRatingChanged(changedValue)
                 }
                 MotionEvent.ACTION_MOVE -> {
                     //handling while dragging event
@@ -90,18 +97,20 @@ fun RatingBar(
                             x1, rowSize.width,
                             numStars, padding.value.toInt()
                         )
-                    rating = calculatedStars.stepSized(stepSize)
+                    val newValue = calculatedStars.stepSized(stepSize)
+                    onValueChange(newValue)
+                    changedValue = newValue
                 }
                 MotionEvent.ACTION_UP -> {
                     //when the click or drag is released
-                    onRatingChanged(rating)
+                    onRatingChanged(changedValue)
                 }
             }
             true
         }) {
         ComposeStars(
-            rating, numStars, size, padding, activeColor,
-            inactiveColor,false, ratingBarStyle
+            value, numStars, size, padding, activeColor,
+            inactiveColor, hideInactiveStars, ratingBarStyle
         )
     }
 }
@@ -137,7 +146,7 @@ fun ComposeStars(
                     fraction
                 }
             }
-            if(hideInactiveStars && starRating==0.0f)
+            if (hideInactiveStars && starRating == 0.0f)
                 break
             RatingStar(
                 fraction = starRating,
@@ -161,8 +170,9 @@ fun ComposeStars(
 @Composable
 fun RatingBarPreview() {
     var rating by remember { mutableStateOf(3.3f) }
-
-    RatingBar(value = rating, onRatingChanged = {
+    RatingBar(value = rating, onValueChange = {
         rating = it
-    })
+    }) {
+        Log.d("TAG", "RatingBarPreview: $it")
+    }
 }
