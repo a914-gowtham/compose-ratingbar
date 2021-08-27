@@ -27,20 +27,14 @@ dependencies {
 
 ## Usage 
 ```kotlin
-    var rating: Float by rememberSaveable { mutableStateOf(initialRating) }
-    Column(
-        modifier =
-        Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        RatingBar(value = rating,
+   var rating: Float by remember { mutableStateOf(initialRating) }
+    
+   RatingBar(value = rating,
             ratingBarStyle = RatingBarStyle.HighLighted, onValueChange = {
             rating = it
         }) {
             Log.d("TAG", "onRatingChanged: $it")
-        }
-    }
+   }
 ```
 
 Ratingbar composable function has 13 params with default value as shown below
