@@ -3,6 +3,7 @@ package com.gowtham.ratingbar
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -10,12 +11,16 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.gowtham.ratingbar.RatingBarUtils.stepSized
@@ -66,6 +71,7 @@ fun RatingBar(
 ) {
     var rowSize by remember { mutableStateOf(Size.Zero) }
     var changedValue by remember { mutableStateOf(0f) }
+    val direction = LocalLayoutDirection.current
 
     Row(modifier = modifier
         .onSizeChanged { rowSize = it.toSize() }
@@ -80,7 +86,12 @@ fun RatingBar(
                             it.x, rowSize.width,
                             numStars, padding.value.toInt()
                         )
-                    val newValue = calculatedStars.stepSized(stepSize)
+                    var newValue =
+                        calculatedStars
+                            .stepSized(stepSize)
+                            .coerceIn(0f, numStars.toFloat())
+                    if (direction == LayoutDirection.Rtl)
+                        newValue = numStars - newValue
                     onValueChange(newValue)
                     onRatingChanged(changedValue)
                 }
@@ -92,7 +103,13 @@ fun RatingBar(
                             x1, rowSize.width,
                             numStars, padding.value.toInt()
                         )
-                    val newValue = calculatedStars.stepSized(stepSize)
+                    var newValue =
+                        calculatedStars
+                            .stepSized(stepSize)
+                            .coerceIn(0f, numStars.toFloat())
+
+                    if (direction == LayoutDirection.Rtl)
+                        newValue = numStars - newValue
                     onValueChange(newValue)
                     changedValue = newValue
                 }

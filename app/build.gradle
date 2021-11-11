@@ -62,5 +62,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     implementation project(path: ':ratingbar')
+    implementation "com.github.instacart.truetime-android:library:3.4"
 
 }

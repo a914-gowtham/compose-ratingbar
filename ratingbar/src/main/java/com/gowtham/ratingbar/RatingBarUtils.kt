@@ -1,6 +1,5 @@
 package com.gowtham.ratingbar
 
-import android.util.Log
 import kotlin.math.roundToInt
 
 object RatingBarUtils {
