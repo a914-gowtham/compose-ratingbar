@@ -27,6 +27,8 @@ dependencies {
 
 ## Usage 
 ```kotlin
+   import androidx.compose.runtime.*
+
    var rating: Float by remember { mutableStateOf(initialRating) }
     
    RatingBar(value = rating,
