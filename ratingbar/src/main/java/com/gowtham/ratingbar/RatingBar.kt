@@ -2,6 +2,9 @@ package com.gowtham.ratingbar
 
 import android.util.Log
 import android.view.MotionEvent
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -9,6 +12,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
@@ -19,11 +24,9 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.unit.*
 import com.gowtham.ratingbar.RatingBarUtils.stepSized
+import kotlin.math.roundToInt
 
 sealed class StepSize {
     object ONE : StepSize()
@@ -70,34 +73,32 @@ fun RatingBar(
     onRatingChanged: (Float) -> Unit
 ) {
     var rowSize by remember { mutableStateOf(Size.Zero) }
-    var changedValue by remember { mutableStateOf(0f) }
+    var lastDraggedValue by remember { mutableStateOf(0f) }
     val direction = LocalLayoutDirection.current
 
     Row(modifier = modifier
         .onSizeChanged { rowSize = it.toSize() }
-        .pointerInteropFilter {
-            if (isIndicator || hideInactiveStars)
-                return@pointerInteropFilter false
-            when (it.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    //handling when single click happens
-                    val calculatedStars =
-                        RatingBarUtils.calculateStars(
-                            it.x, rowSize.width,
-                            numStars, padding.value.toInt()
-                        )
-                    var newValue =
-                        calculatedStars
-                            .stepSized(stepSize)
-                            .coerceIn(0f, numStars.toFloat())
-                    if (direction == LayoutDirection.Rtl)
-                        newValue = numStars - newValue
-                    onValueChange(newValue)
-                    onRatingChanged(changedValue)
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    //handling while dragging event
-                    val x1 = it.x.coerceIn(0f, rowSize.width)
+        .pointerInput(
+            Unit
+        ) {
+            //handling dragging events
+            detectHorizontalDragGestures(
+                onDragEnd = {
+                    if (isIndicator || hideInactiveStars)
+                        return@detectHorizontalDragGestures
+                        onRatingChanged(lastDraggedValue)
+                },
+                onDragCancel = {
+
+                },
+                onDragStart = {
+
+                },
+                onHorizontalDrag = { change, _ ->
+                    if (isIndicator || hideInactiveStars)
+                        return@detectHorizontalDragGestures
+                    change.consumeAllChanges()
+                    val x1 = change.position.x.coerceIn(0f, rowSize.width)
                     val calculatedStars =
                         RatingBarUtils.calculateStars(
                             x1, rowSize.width,
@@ -111,11 +112,29 @@ fun RatingBar(
                     if (direction == LayoutDirection.Rtl)
                         newValue = numStars - newValue
                     onValueChange(newValue)
-                    changedValue = newValue
+                    lastDraggedValue = newValue
                 }
-                MotionEvent.ACTION_UP -> {
-                    //when the click or drag is released
-                    onRatingChanged(changedValue)
+            )
+        }
+        .pointerInteropFilter {
+            if (isIndicator || hideInactiveStars)
+                return@pointerInteropFilter false
+            when (it.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //handling when click events
+                    val calculatedStars =
+                        RatingBarUtils.calculateStars(
+                            it.x, rowSize.width,
+                            numStars, padding.value.toInt()
+                        )
+                    var newValue =
+                        calculatedStars
+                            .stepSized(stepSize)
+                            .coerceIn(0f, numStars.toFloat())
+                    if (direction == LayoutDirection.Rtl)
+                        newValue = numStars - newValue
+                    onValueChange(newValue)
+                    onRatingChanged(newValue)
                 }
             }
             true
@@ -142,7 +161,8 @@ fun ComposeStars(
     val ratingPerStar = 1f
     var remainingRating = value
 
-    Row(modifier = Modifier.semantics { starRating = value }) {
+    Row(modifier = Modifier
+        .semantics { starRating = value }) {
         for (i in 1..numStars) {
             val starRating = when {
                 remainingRating == 0f -> {
