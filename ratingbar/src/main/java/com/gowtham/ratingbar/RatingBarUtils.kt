@@ -42,7 +42,7 @@ object RatingBarUtils {
         else {
             var value = this.toInt().toFloat()
             if (this < value.plus(0.5)) {
-                if(this==0f)
+                if (this == 0f)
                     return 0f
                 value = value.plus(0.5).toFloat()
                 value

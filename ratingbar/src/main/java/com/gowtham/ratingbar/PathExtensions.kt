@@ -28,7 +28,7 @@ fun Path.addStar(
     var x: Double
     var y: Double
 
-    for (i in 1 ..spikes) {
+    for (i in 1..spikes) {
         // Line going inwards from outerCircle to innerCircle
         totalAngle += degreesPerSection / 2
         x = centerX + cos(totalAngle) * innerRadius

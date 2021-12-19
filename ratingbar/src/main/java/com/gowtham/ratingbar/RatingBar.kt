@@ -86,7 +86,7 @@ fun RatingBar(
                 onDragEnd = {
                     if (isIndicator || hideInactiveStars)
                         return@detectHorizontalDragGestures
-                        onRatingChanged(lastDraggedValue)
+                    onRatingChanged(lastDraggedValue)
                 },
                 onDragCancel = {
 
