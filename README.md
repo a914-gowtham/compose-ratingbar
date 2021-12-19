@@ -27,6 +27,8 @@ dependencies {
 
 ## Usage 
 ```kotlin
+   import androidx.compose.runtime.*
+
    var rating: Float by remember { mutableStateOf(initialRating) }
     
    RatingBar(value = rating,
@@ -58,3 +60,11 @@ fun RatingBar(
 
 ## Library Info
 * Current version of the library only supports Stepsize 1f and 0.5f when click or drag.However, Initial Rating value could be any float value like 3.8 etc.
+
+## ❤ Show your support
+
+Give a ⭐️ if this project helped you!
+
+<a href="https://www.buymeacoffee.com/gowtham6672" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="160">
+</a>
