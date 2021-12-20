@@ -61,7 +61,7 @@ fun RatingBar(
 ## Library Info
 * Current version of the library only supports Stepsize 1f and 0.5f when click or drag.However, Initial Rating value could be any float value like 3.8 etc.
 
-## ❤ Show your support
+## Show some ❤ and support
 
 Give a ⭐️ if this project helped you!
 
