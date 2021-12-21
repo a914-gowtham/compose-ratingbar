@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gowtham.compose_ratingbar.ui.theme.JetpackComposeTheme
 import com.gowtham.ratingbar.RatingBar
+import com.gowtham.ratingbar.RatingBarConfig
 import com.gowtham.ratingbar.RatingBarStyle
 
 class MainActivity : ComponentActivity() {
@@ -55,7 +56,8 @@ fun MainScreen() {
         verticalArrangement = Arrangement.Center,
     ) {
         RatingBar(
-            value = rating,
+            config = RatingBarConfig()
+                .value(rating),
             ratingBarStyle = RatingBarStyle.HighLighted,
             onValueChange = {
                 rating = it
