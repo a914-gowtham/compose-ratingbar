@@ -56,9 +56,9 @@ fun MainScreen() {
         verticalArrangement = Arrangement.Center,
     ) {
         RatingBar(
+            value = rating,
             config = RatingBarConfig()
-                .value(rating),
-            ratingBarStyle = RatingBarStyle.HighLighted,
+                .style(RatingBarStyle.HighLighted),
             onValueChange = {
                 rating = it
             },

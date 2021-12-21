@@ -32,8 +32,9 @@ dependencies {
    var rating: Float by remember { mutableStateOf(initialRating) }
 
    RatingBar(
-       config = RatingBarConfig().value(rating),
-       ratingBarStyle = RatingBarStyle.HighLighted,
+       value = rating,
+       config = RatingBarConfig()
+           .style(RatingBarStyle.HighLighted),
        onValueChange = {
            rating = it
        },
@@ -46,9 +47,9 @@ dependencies {
 Ratingbar composable function has 13 params with default value as shown below:
 ```kotlin
 fun RatingBar(
+    value: Float,
     modifier: Modifier = Modifier,
     config: RatingBarConfig = RatingBarConfig(),
-    ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
     onValueChange: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
 )

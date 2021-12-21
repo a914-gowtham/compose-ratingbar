@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
  *      config = RatingBarConfig()
  *          .size(26.dp)
  *          .padding(2.dp)
- *          .value(0f)
+ *          .style(RatingBarStyle.Normal)
  *          .numStars(5)
  *          .isIndicator(false)
  *          .activeColor(Color(0xffffd740))
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
  *     onRatingChanged = {/* code here */}
  * )
  * ```
+ * @see [RatingBarStyle]
  */
 class RatingBarConfig {
 
@@ -39,9 +40,9 @@ class RatingBarConfig {
         private set
 
     /**
-     * value is current selected rating count.
+     * Can be [RatingBarStyle.Normal] or [RatingBarStyle.HighLighted]
      */
-    var value: Float = 0f
+    var style: RatingBarStyle = RatingBarStyle.Normal
         private set
 
     /**
@@ -102,9 +103,9 @@ class RatingBarConfig {
      * Sets the rating value of the composable.
      * @param value the value in Float.
      */
-    fun value(value: Float): RatingBarConfig =
+    fun style(value: RatingBarStyle): RatingBarConfig =
         apply {
-            this.value = value
+            style = value
         }
 
     /**

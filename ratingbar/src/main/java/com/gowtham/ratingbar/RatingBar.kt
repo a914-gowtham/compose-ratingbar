@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
@@ -40,17 +39,17 @@ var SemanticsPropertyReceiver.starRating by StarRatingKey
 /**
  * Draws a Rating Bar on the screen according to the [RatingBarConfig] instance passed to the composable
  *
+ * @param value is current selected rating count
  * @param config the different configurations applied to the Rating Bar.
- * @param ratingBarStyle Can be [RatingBarStyle.Normal] or [RatingBarStyle.HighLighted]
  * @param onRatingChanged A function to be called when the click or drag is released and rating value is passed
  * @see [RatingBarConfig]
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RatingBar(
+    value: Float,
     modifier: Modifier = Modifier,
     config: RatingBarConfig = RatingBarConfig(),
-    ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
     onValueChange: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
 ) {
@@ -125,21 +124,21 @@ fun RatingBar(
             }
             true
         }) {
-        ComposeStars(config, ratingBarStyle)
+        ComposeStars(value, config)
     }
 }
 
 @Composable
 fun ComposeStars(
-    config: RatingBarConfig,
-    ratingBarStyle: RatingBarStyle
+    value: Float,
+    config: RatingBarConfig
 ) {
 
     val ratingPerStar = 1f
-    var remainingRating = config.value
+    var remainingRating = value
 
     Row(modifier = Modifier
-        .semantics { starRating = config.value }) {
+        .semantics { starRating = value }) {
         for (i in 1..config.numStars) {
             val starRating = when {
                 remainingRating == 0f -> {
@@ -159,19 +158,16 @@ fun ComposeStars(
                 break
             RatingStar(
                 fraction = starRating,
+                config = config,
                 modifier = Modifier
                     .padding(
                         start = if (i > 1) config.padding else 0.dp,
                         end = if (i < config.numStars) config.padding else 0.dp
                     )
                     .size(size = config.size)
-                    .testTag("RatingStar"),
-                config.activeColor,
-                config.inactiveColor,
-                ratingBarStyle
+                    .testTag("RatingStar")
             )
         }
-
     }
 }
 
@@ -180,8 +176,8 @@ fun ComposeStars(
 fun RatingBarPreview() {
     var rating by remember { mutableStateOf(3.3f) }
     RatingBar(
-        config = RatingBarConfig()
-            .value(rating),
+        value = rating,
+        config = RatingBarConfig(),
         onValueChange = {
             rating = it
         }
