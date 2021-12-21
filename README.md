@@ -30,28 +30,24 @@ dependencies {
    import androidx.compose.runtime.*
 
    var rating: Float by remember { mutableStateOf(initialRating) }
-    
-   RatingBar(value = rating,
-            ratingBarStyle = RatingBarStyle.HighLighted, onValueChange = {
-            rating = it
-        }) {
-            Log.d("TAG", "onRatingChanged: $it")
-   }
+
+   RatingBar(
+       config = RatingBarConfig().value(rating),
+       ratingBarStyle = RatingBarStyle.HighLighted,
+       onValueChange = {
+           rating = it
+       },
+       onRatingChanged = {
+           Log.d("TAG", "onRatingChanged: $it")
+       }
+   )
 ```
 
-Ratingbar composable function has 13 params with default value as shown below
+Ratingbar composable function has 13 params with default value as shown below:
 ```kotlin
 fun RatingBar(
     modifier: Modifier = Modifier,
-    value: Float = 0f,
-    numStars: Int = 5,
-    size: Dp = 26.dp,
-    padding: Dp = 2.dp,
-    isIndicator: Boolean = false,
-    activeColor: Color = Color(0xffffd740),
-    inactiveColor: Color = Color(0xffffecb3),
-    stepSize: StepSize = StepSize.ONE,
-    hideInactiveStars: Boolean = false,
+    config: RatingBarConfig = RatingBarConfig(),
     ratingBarStyle: RatingBarStyle = RatingBarStyle.Normal,
     onValueChange: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
@@ -59,7 +55,7 @@ fun RatingBar(
 ```
 
 ## Library Info
-* Current version of the library only supports Stepsize 1f and 0.5f when click or drag.However, Initial Rating value could be any float value like 3.8 etc.
+* Current version of the library only supports Stepsize 1f and 0.5f when click or drag. However, Initial Rating value could be any float value like 3.8 etc.
 
 ## Show some ❤ and support
 
