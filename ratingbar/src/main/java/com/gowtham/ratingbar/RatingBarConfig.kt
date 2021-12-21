@@ -100,8 +100,9 @@ class RatingBarConfig {
         }
 
     /**
-     * Sets the rating value of the composable.
+     * Sets the style of the composable.
      * @param value the value in Float.
+     * @see [RatingBarStyle]
      */
     fun style(value: RatingBarStyle): RatingBarConfig =
         apply {
