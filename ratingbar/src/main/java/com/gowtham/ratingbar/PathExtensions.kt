@@ -1,12 +1,11 @@
 package com.gowtham.ratingbar
 
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-
 import androidx.annotation.FloatRange
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 fun Path.addStar(
     size: Size,
