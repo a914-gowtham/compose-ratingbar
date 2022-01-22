@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.gowtham.compose_ratingbar.MainActivity.Companion.initialRating
 import com.gowtham.compose_ratingbar.ui.theme.JetpackComposeTheme
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarConfig
@@ -48,7 +49,7 @@ fun MyApp() {
 
 @Composable
 fun MainScreen() {
-    var rating: Float by rememberSaveable { mutableStateOf(2.8f) }
+    var rating: Float by rememberSaveable { mutableStateOf(initialRating) }
 
     Column(
         modifier = Modifier.fillMaxSize(),

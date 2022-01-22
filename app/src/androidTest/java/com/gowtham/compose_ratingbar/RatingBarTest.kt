@@ -4,15 +4,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.gowtham.compose_ratingbar.ui.theme.ComposeRatingBarTheme
 import com.gowtham.ratingbar.StarRatingKey
-import kotlinx.coroutines.flow.MutableStateFlow
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Rule
 
 /**
