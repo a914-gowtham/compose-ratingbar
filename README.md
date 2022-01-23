@@ -18,9 +18,9 @@ repositories {
 
 // App build.gradle
 dependencies {
-   implementation 'com.github.a914-gowtham:compose-ratingbar:1.1.1'
+   implementation 'com.github.a914-gowtham:compose-ratingbar:1.2.2'
   //mavenCentral
-  // implementation 'io.github.a914-gowtham:compose-ratingbar:1.1.1'
+  // implementation 'io.github.a914-gowtham:compose-ratingbar:1.2.2'
 
 }
 ```
@@ -44,15 +44,18 @@ dependencies {
    )
 ```
 
-Ratingbar composable function has 13 params with default value as shown below:
+Ratingbar composable can be customized using  [RatingBarConfig](https://github.com/a914-gowtham/compose-ratingbar/blob/main/ratingbar/src/main/java/com/gowtham/ratingbar/RatingBarConfig.kt) class as shown below:
 ```kotlin
-fun RatingBar(
-    value: Float,
-    modifier: Modifier = Modifier,
-    config: RatingBarConfig = RatingBarConfig(),
-    onValueChange: (Float) -> Unit,
-    onRatingChanged: (Float) -> Unit
-)
+        RatingBarConfig()
+                .activeColor(Color.Yellow)
+                .hideInactiveStars(true)
+                .inactiveColor(Color.LightGray)
+                .stepSize(StepSize.HALF)
+                .numStars(10)
+                .isIndicator(true)
+                .size(24.dp)
+                .padding(6.dp)
+                .style(RatingBarStyle.HighLighted)
 ```
 
 ## Library Info
