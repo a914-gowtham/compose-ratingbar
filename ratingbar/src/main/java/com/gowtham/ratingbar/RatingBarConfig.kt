@@ -142,7 +142,7 @@ class RatingBarConfig {
      */
     fun inactiveColor(value: Color): RatingBarConfig =
         apply {
-            activeColor = value
+            inactiveColor = value
         }
 
     /**
