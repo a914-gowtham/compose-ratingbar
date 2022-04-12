@@ -70,7 +70,7 @@ private fun EmptyStar(
         if (config.style is RatingBarStyle.Normal)
             drawPath(path, color = config.inactiveColor, style = Fill) // Border
         else
-            drawPath(path, color = Color.Gray, style = Stroke(width = strokeWidth)) // Border
+            drawPath(path, color = config.inactiveBorderColor, style = Stroke(width = strokeWidth)) // Border
     }
 
 @Preview(showBackground = true)
@@ -80,8 +80,21 @@ fun EmptyRatingStarPreview() {
         fraction = 0f,
         config = RatingBarConfig()
             .activeColor(Color(0xffffd740))
-            .inactiveColor(Color(0xffffd740))
+            .inactiveColor(Color.Gray)
             .style(RatingBarStyle.Normal),
+        modifier = Modifier.size(20.dp)
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HighlightedWithBorderColorPreview() {
+    RatingStar(
+        fraction = 0.5f,
+        config = RatingBarConfig()
+            .activeColor(Color(0xffffd740))
+            .inactiveBorderColor(Color.Blue)
+            .style(RatingBarStyle.HighLighted),
         modifier = Modifier.size(20.dp)
     )
 }
