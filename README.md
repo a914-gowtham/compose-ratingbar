@@ -51,6 +51,7 @@ Ratingbar composable can be customized using  [RatingBarConfig](https://github.c
                 .activeColor(Color.Yellow)
                 .hideInactiveStars(true)
                 .inactiveColor(Color.LightGray)
+                .inactiveBorderColor(Color.Blue)
                 .stepSize(StepSize.HALF)
                 .numStars(10)
                 .isIndicator(true)
