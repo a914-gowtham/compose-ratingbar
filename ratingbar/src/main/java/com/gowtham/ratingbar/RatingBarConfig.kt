@@ -70,6 +70,12 @@ class RatingBarConfig {
         private set
 
     /**
+     * A border [Color] shown on inactive star.
+     */
+    var inactiveBorderColor: Color = Color(0xFF888888)
+        private set
+
+    /**
      * Minimum value to trigger a change
      */
     var stepSize: StepSize = StepSize.ONE
@@ -143,6 +149,15 @@ class RatingBarConfig {
     fun inactiveColor(value: Color): RatingBarConfig =
         apply {
             inactiveColor = value
+        }
+
+    /**
+     * Sets the [Color] representing a inactive star (or part of it).
+     * @param value the value in [Color]
+     */
+    fun inactiveBorderColor(value: Color): RatingBarConfig =
+        apply {
+            inactiveBorderColor = value
         }
 
     /**
