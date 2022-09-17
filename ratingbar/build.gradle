@@ -30,11 +30,12 @@ allprojects {
 */
 
 android {
-    compileSdk 33
+    compileSdk rootProject.compileSdk
 
     defaultConfig {
-        minSdk 21
-        targetSdk 33
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
+
         versionCode 1
         versionName "1.0"
         consumerProguardFiles "consumer-rules.pro"
