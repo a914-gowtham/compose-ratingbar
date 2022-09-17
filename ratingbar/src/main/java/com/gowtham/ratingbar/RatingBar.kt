@@ -21,14 +21,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.gowtham.ratingbar.RatingBarUtils.stepSized
 
-sealed class StepSize {
-    object ONE : StepSize()
-    object HALF : StepSize()
+sealed interface StepSize {
+    object ONE : StepSize
+    object HALF : StepSize
 }
 
-sealed class RatingBarStyle {
-    object Normal : RatingBarStyle()
-    object HighLighted : RatingBarStyle()
+sealed interface RatingBarStyle {
+    object Normal : RatingBarStyle
+    object HighLighted : RatingBarStyle
 }
 
 //For ui testing
@@ -78,7 +78,7 @@ fun RatingBar(
                 onHorizontalDrag = { change, _ ->
                     if (config.isIndicator || config.hideInactiveStars)
                         return@detectHorizontalDragGestures
-                    change.consumeAllChanges()
+                    change.consume()
                     val x1 = change.position.x.coerceIn(0f, rowSize.width)
                     val calculatedStars =
                         RatingBarUtils.calculateStars(
