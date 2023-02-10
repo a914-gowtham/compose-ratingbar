@@ -34,6 +34,12 @@ class RatingBarConfig {
         private set
 
     /**
+     * stroke width for each star
+     */
+    var strokeWidth: Float = 1f
+        private set
+
+    /**
      * padding between each star.
      */
     var padding: Dp = 2.dp
@@ -94,6 +100,15 @@ class RatingBarConfig {
     fun size(value: Dp): RatingBarConfig =
         apply {
             size = value
+        }
+
+    /**
+     * Sets the stroke width of stars
+     * @param value the value in Float
+     */
+    fun strokeWidth(value: Float): RatingBarConfig =
+        apply {
+            strokeWidth = value
         }
 
     /**
