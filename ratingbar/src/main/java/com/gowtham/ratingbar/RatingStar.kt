@@ -17,8 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
-private const val strokeWidth = 1f
-
 @Composable
 fun RatingStar(
     @FloatRange(from = 0.0, to = 1.0) fraction: Float,
@@ -28,13 +26,13 @@ fun RatingStar(
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Box(modifier = modifier) {
-        FilledStar(fraction, config.activeColor, isRtl)
-        EmptyStar(fraction, config, isRtl)
+        FilledStar(fraction, config.activeColor, isRtl, config.strokeWidth)
+        EmptyStar(fraction, config, isRtl, config.strokeWidth)
     }
 }
 
 @Composable
-private fun FilledStar(fraction: Float, activeColor: Color, isRtl: Boolean) = Canvas(
+private fun FilledStar(fraction: Float, activeColor: Color, isRtl: Boolean, strokeWidth: Float) = Canvas(
     modifier = Modifier
         .fillMaxSize()
         .clip(
@@ -54,7 +52,8 @@ private fun FilledStar(fraction: Float, activeColor: Color, isRtl: Boolean) = Ca
 private fun EmptyStar(
     fraction: Float,
     config: RatingBarConfig,
-    isRtl: Boolean
+    isRtl: Boolean,
+    strokeWidth: Float
 ) =
     Canvas(
         modifier = Modifier
