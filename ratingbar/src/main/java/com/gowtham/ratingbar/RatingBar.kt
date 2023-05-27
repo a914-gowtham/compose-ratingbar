@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
@@ -21,6 +22,7 @@ import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -30,9 +32,25 @@ sealed interface StepSize {
     object HALF : StepSize
 }
 
-sealed interface RatingBarStyle {
-    object Normal : RatingBarStyle
-    object HighLighted : RatingBarStyle
+sealed class RatingBarStyle(open val activeColor: Color) {
+    companion object {
+        val Default = Stroke()
+    }
+
+    open class Fill(
+        override val activeColor: Color = Color(0xFFFFCA00),
+        val inActiveColor: Color = Color(0x66FFCA00),
+    ) : RatingBarStyle(activeColor)
+
+    /**
+     * @param width width for each star
+     * @param color A border [Color] shown on inactive star.
+     */
+    class Stroke(
+        val width: Float = 1f,
+        override val activeColor: Color = Color(0xFFFFCA00),
+        val strokeColor: Color = Color(0xFF888888)
+    ) : RatingBarStyle(activeColor)
 }
 
 //For ui testing
@@ -41,21 +59,30 @@ var SemanticsPropertyReceiver.starRating by StarRatingKey
 
 
 /**
- * Draws a Rating Bar on the screen according to the [RatingBarConfig] instance passed to the composable
- *
  * @param value is current selected rating count
- * @param config the different configurations applied to the Rating Bar.
+ * @param numOfStars count of stars to be shown.
+ * @param size size for each star
+ * @param horizontalPadding padding between each star.
+ * @param isIndicator isIndicator Whether this rating bar is only an indicator or the value is changeable on user interaction.
+ * @param stepSize Can be [StepSize.ONE] or [StepSize.HALF]
+ * @param hideInactiveStars Whether the inactive stars should be hidden.
+ * @param style the different style applied to the Rating Bar.
  * @param onRatingChanged A function to be called when the click or drag is released and rating value is passed
- * @see [RatingBarConfig]
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RatingBar(
+internal fun RatingBar(
     value: Float,
     modifier: Modifier = Modifier,
-    config: RatingBarConfig = RatingBarConfig(),
-    painterEmpty: Painter?= null,
-    painterFilled: Painter?= null,
+    numOfStars: Int = 5,
+    size: Dp = 32.dp,
+    horizontalPadding: Dp = 6.dp,
+    isIndicator: Boolean = false,
+    stepSize: StepSize = StepSize.ONE,
+    hideInactiveStars: Boolean = false,
+    style: RatingBarStyle = RatingBarStyle.Default,
+    painterEmpty: Painter? = null,
+    painterFilled: Painter? = null,
     onValueChange: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
 ) {
@@ -65,11 +92,11 @@ fun RatingBar(
     val density = LocalDensity.current
 
 
-    val paddingInPx = remember(config.horizontalPadding) {
-        with(density) { config.horizontalPadding.toPx() }
+    val paddingInPx = remember {
+        with(density) { horizontalPadding.toPx() }
     }
-    val starSizeInPx = remember(config.size) {
-        with(density) { config.size.toPx() }
+    val starSizeInPx = remember() {
+        with(density) { size.toPx() }
     }
 
     Row(modifier = modifier
@@ -80,7 +107,7 @@ fun RatingBar(
             //handling dragging events
             detectHorizontalDragGestures(
                 onDragEnd = {
-                    if (config.isIndicator || config.hideInactiveStars)
+                    if (isIndicator || hideInactiveStars)
                         return@detectHorizontalDragGestures
                     onRatingChanged(lastDraggedValue)
                 },
@@ -91,7 +118,7 @@ fun RatingBar(
 
                 },
                 onHorizontalDrag = { change, _ ->
-                    if (config.isIndicator || config.hideInactiveStars)
+                    if (isIndicator || hideInactiveStars)
                         return@detectHorizontalDragGestures
                     change.consume()
                     val dragX = change.position.x.coerceIn(-1f, rowSize.width)
@@ -99,19 +126,18 @@ fun RatingBar(
                         RatingBarUtils.calculateStars(
                             dragX,
                             paddingInPx,
-                            starSizeInPx,
-                            config
+                            numOfStars, stepSize, starSizeInPx
                         )
 
                     if (direction == LayoutDirection.Rtl)
-                        calculatedStars = config.numStars - calculatedStars
+                        calculatedStars = numOfStars - calculatedStars
                     onValueChange(calculatedStars)
                     lastDraggedValue = calculatedStars
                 }
             )
         }
         .pointerInteropFilter {
-            if (config.isIndicator || config.hideInactiveStars)
+            if (isIndicator || hideInactiveStars)
                 return@pointerInteropFilter false
             //handling when click events
             when (it.action) {
@@ -121,25 +147,100 @@ fun RatingBar(
                         RatingBarUtils.calculateStars(
                             dragX,
                             paddingInPx,
-                            starSizeInPx,
-                            config
+                            numOfStars, stepSize, starSizeInPx
                         )
                     if (direction == LayoutDirection.Rtl)
-                        calculatedStars = config.numStars - calculatedStars
+                        calculatedStars = numOfStars - calculatedStars
                     onValueChange(calculatedStars)
                     onRatingChanged(calculatedStars)
                 }
             }
             true
         }) {
-        ComposeStars(value, config,painterEmpty,painterFilled)
+        ComposeStars(
+            value,
+            numOfStars,
+            size,
+            horizontalPadding,
+            hideInactiveStars,
+            style = style,
+            painterEmpty,
+            painterFilled
+        )
     }
+}
+
+@Composable
+fun RatingBar(
+    value: Float,
+    modifier: Modifier = Modifier,
+    numOfStars: Int = 5,
+    size: Dp = 32.dp,
+    horizontalPadding: Dp = 6.dp,
+    isIndicator: Boolean = false,
+    stepSize: StepSize = StepSize.ONE,
+    hideInactiveStars: Boolean = false,
+    style: RatingBarStyle,
+    onValueChange: (Float) -> Unit,
+    onRatingChanged: (Float) -> Unit
+) {
+    RatingBar(
+        value = value,
+        modifier = modifier,
+        numOfStars = numOfStars,
+        size = size,
+        horizontalPadding = horizontalPadding,
+        isIndicator = isIndicator,
+        stepSize = stepSize,
+        hideInactiveStars = hideInactiveStars,
+        style = style,
+        painterEmpty = null,
+        painterFilled = null,
+        onValueChange = onValueChange,
+        onRatingChanged = onRatingChanged
+    )
+}
+
+@Composable
+fun RatingBar(
+    value: Float,
+    modifier: Modifier = Modifier,
+    numOfStars: Int = 5,
+    size: Dp = 32.dp,
+    horizontalPadding: Dp = 6.dp,
+    isIndicator: Boolean = false,
+    stepSize: StepSize = StepSize.ONE,
+    hideInactiveStars: Boolean = false,
+    painterEmpty: Painter,
+    painterFilled: Painter,
+    onValueChange: (Float) -> Unit,
+    onRatingChanged: (Float) -> Unit
+) {
+    RatingBar(
+        value = value,
+        modifier = modifier,
+        numOfStars = numOfStars,
+        size = size,
+        horizontalPadding = horizontalPadding,
+        isIndicator = isIndicator,
+        stepSize = stepSize,
+        hideInactiveStars = hideInactiveStars,
+        style = RatingBarStyle.Default,
+        painterEmpty = painterEmpty,
+        painterFilled = painterFilled,
+        onValueChange = onValueChange,
+        onRatingChanged = onRatingChanged
+    )
 }
 
 @Composable
 fun ComposeStars(
     value: Float,
-    config: RatingBarConfig,
+    numOfStars: Int,
+    size: Dp,
+    horizontalPadding: Dp,
+    hideInactiveStars: Boolean,
+    style: RatingBarStyle,
     painterEmpty: Painter?,
     painterFilled: Painter?
 ) {
@@ -149,35 +250,37 @@ fun ComposeStars(
 
     Row(modifier = Modifier
         .semantics { starRating = value }) {
-        for (i in 1..config.numStars) {
+        for (i in 1..numOfStars) {
             val starRating = when {
                 remainingRating == 0f -> {
                     0f
                 }
+
                 remainingRating >= ratingPerStar -> {
                     remainingRating -= ratingPerStar
                     1f
                 }
+
                 else -> {
                     val fraction = remainingRating / ratingPerStar
                     remainingRating = 0f
                     fraction
                 }
             }
-            if (config.hideInactiveStars && starRating == 0.0f)
+            if (hideInactiveStars && starRating == 0.0f)
                 break
 
             RatingStar(
                 fraction = starRating,
-                config = config,
+                style = style,
                 modifier = Modifier
                     .padding(
-                        start = if (i > 1) config.horizontalPadding else 0.dp,
-                        end = if (i < config.numStars) config.horizontalPadding else 0.dp
+                        start = if (i > 1) horizontalPadding else 0.dp,
+                        end = if (i < numOfStars) horizontalPadding else 0.dp
                     )
-                    .size(size = config.size)
+                    .size(size = size)
                     .testTag("RatingStar"),
-                painterEmpty, painterFilled
+                painterEmpty = painterEmpty, painterFilled = painterFilled
             )
         }
     }
@@ -189,7 +292,7 @@ fun RatingBarPreview() {
     var rating by remember { mutableStateOf(3.3f) }
     RatingBar(
         value = rating,
-        config = RatingBarConfig(),
+        style = RatingBarStyle.Fill(),
         onValueChange = {
             rating = it
         }

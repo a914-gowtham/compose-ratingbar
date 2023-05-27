@@ -22,22 +22,26 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RatingStar(
     @FloatRange(from = 0.0, to = 1.0) fraction: Float,
-    config: RatingBarConfig,
     modifier: Modifier = Modifier,
+    style: RatingBarStyle,
     painterEmpty: Painter?,
     painterFilled: Painter?
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-
     Box(modifier = modifier) {
-        FilledStar(fraction, config.activeColor, isRtl, config.strokeWidth, painterFilled)
-        EmptyStar(fraction, config, isRtl, config.strokeWidth, painterEmpty)
+        FilledStar(
+            fraction,
+            style,
+            isRtl,
+            painterFilled
+        )
+        EmptyStar(fraction, style, isRtl, painterEmpty)
     }
 }
 
 @Composable
 private fun FilledStar(
-    fraction: Float, activeColor: Color, isRtl: Boolean, strokeWidth: Float, painterFilled: Painter?
+    fraction: Float, style: RatingBarStyle, isRtl: Boolean, painterFilled: Painter?
 ) = Canvas(
     modifier = Modifier
         .fillMaxSize()
@@ -56,8 +60,12 @@ private fun FilledStar(
     } else {
         val path = Path().addStar(size)
 
-        drawPath(path, color = activeColor, style = Fill) // Filled Star
-        drawPath(path, color = activeColor, style = Stroke(width = strokeWidth)) // Border
+        drawPath(path, color = style.activeColor, style = Fill) // Filled Star
+        drawPath(
+            path,
+            color = style.activeColor,
+            style = Stroke(width = if (style is RatingBarStyle.Stroke) style.width else 1f)
+        ) // Border
     }
 
 
@@ -66,9 +74,8 @@ private fun FilledStar(
 @Composable
 private fun EmptyStar(
     fraction: Float,
-    config: RatingBarConfig,
+    style: RatingBarStyle,
     isRtl: Boolean,
-    strokeWidth: Float,
     painterEmpty: Painter?
 ) =
     Canvas(
@@ -88,13 +95,13 @@ private fun EmptyStar(
             }
         } else {
             val path = Path().addStar(size)
-            if (config.style is RatingBarStyle.Normal) drawPath(
+            if (style is RatingBarStyle.Fill) drawPath(
                 path,
-                color = config.inactiveColor,
+                color = style.inActiveColor,
                 style = Fill
             ) // Border
-            else drawPath(
-                path, color = config.inactiveBorderColor, style = Stroke(width = strokeWidth)
+            else if (style is RatingBarStyle.Stroke) drawPath(
+                path, color = style.strokeColor, style = Stroke(width = style.width)
             ) // Border
         }
 
@@ -105,11 +112,13 @@ private fun EmptyStar(
 fun EmptyRatingStarPreview() {
     RatingStar(
         fraction = 0f,
-        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveColor(Color.Gray)
-            .style(RatingBarStyle.Normal),
+        style = RatingBarStyle.Fill(
+            activeColor = Color(0xffffd740),
+            inActiveColor = Color.Gray
+        ),
         modifier = Modifier.size(20.dp),
-        null,
-        null
+        painterEmpty = null,
+        painterFilled = null
     )
 }
 
@@ -117,12 +126,14 @@ fun EmptyRatingStarPreview() {
 @Composable
 fun HighlightedWithBorderColorPreview() {
     RatingStar(
-        fraction = 0.5f,
-        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveBorderColor(Color.Blue)
-            .style(RatingBarStyle.HighLighted),
+        fraction = 0.8f,
+        style = RatingBarStyle.Stroke(
+            activeColor = Color(0xffffd740),
+            strokeColor = Color.Blue
+        ),
         modifier = Modifier.size(20.dp),
-        null,
-        null
+        painterEmpty = null,
+        painterFilled = null
     )
 }
 
@@ -130,12 +141,14 @@ fun HighlightedWithBorderColorPreview() {
 @Composable
 fun PartialRatingStarPreview() {
     RatingStar(
-        fraction = 0.7f,
-        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveColor(Color(0xffffd740))
-            .style(RatingBarStyle.Normal),
+        fraction = 0.8f,
+        style = RatingBarStyle.Fill(
+            activeColor = Color(0xffffd740),
+            inActiveColor = Color(0x66FFD740)
+        ),
         modifier = Modifier.size(20.dp),
-        null,
-        null
+        painterEmpty = null,
+        painterFilled = null
     )
 }
 
@@ -144,11 +157,13 @@ fun PartialRatingStarPreview() {
 fun FullRatingStarPreview() {
     RatingStar(
         fraction = 1f,
-        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveColor(Color(0xffffd740))
-            .style(RatingBarStyle.Normal),
+        style = RatingBarStyle.Fill(
+            activeColor = Color(0xffffd740),
+            inActiveColor = Color(0x66FFD740)
+        ),
         modifier = Modifier.size(20.dp),
-        null,
-        null
+        painterEmpty = null,
+        painterFilled = null
     )
 }
 
