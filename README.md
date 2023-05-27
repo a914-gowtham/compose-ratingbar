@@ -62,7 +62,7 @@ Ratingbar composable can be customized using  [RatingBarConfig](https://github.c
 
 ## Customization
 
-<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/custom_demo.gif" width="340" height="260"/>
+<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/customization_demo.gif" width="340" height="260"/>
 
 ```kotlin
         RatingBar(
