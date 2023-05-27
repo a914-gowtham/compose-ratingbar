@@ -19,7 +19,7 @@ repositories {
 
 // App build.gradle
 dependencies {
-   implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.0'
+   implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.1'
   //mavenCentral
   // implementation 'io.github.a914-gowtham:compose-ratingbar:1.2.3'
 
@@ -60,6 +60,26 @@ Ratingbar composable can be customized using  [RatingBarConfig](https://github.c
                 .style(RatingBarStyle.HighLighted)
 ```
 
+## Customization
+
+<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/customization_demo.gif" width="340" height="260"/>
+
+```kotlin
+        RatingBar(
+            value = rating,
+            config = RatingBarConfig()
+                .padding(2.dp)
+                .size(32.dp),
+            painterEmpty = painterResource(id = R.drawable.icon_empty),
+            painterFilled = painterResource(id = R.drawable.icon_filled),
+            onValueChange = {
+                rating = it
+            },
+            onRatingChanged = {
+                Log.d("TAG", "onRatingChanged: $it")
+            }
+        )
+```
 ## Library Info
 * Current version of the library only supports Stepsize 1f and 0.5f when click or drag. However, Initial Rating value could be any float value like 3.8 etc.
 
