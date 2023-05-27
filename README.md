@@ -6,7 +6,7 @@ A ratingbar for jetpack compose
 [![](https://jitpack.io/v/a914-gowtham/compose-ratingbar/month.svg)](https://jitpack.io/#a914-gowtham/compose-ratingbar)
 
 
-<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/demo_1.gif" width="340" height="260"/>
+<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/refactor/ratingbar_usage/demo_1.gif" width="340" height="260"/>
 
 Download
 --------
@@ -19,7 +19,7 @@ repositories {
 
 // App build.gradle
 dependencies {
-   implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.1'
+   implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.3'
   //mavenCentral
   // implementation 'io.github.a914-gowtham:compose-ratingbar:1.2.3'
 
@@ -30,14 +30,13 @@ dependencies {
 ```kotlin
    import androidx.compose.runtime.*
 
-   var rating: Float by remember { mutableStateOf(initialRating) }
+   var rating: Float by remember { mutableStateOf(3.2f) }
 
    RatingBar(
        value = rating,
-       config = RatingBarConfig()
-           .style(RatingBarStyle.HighLighted),
+       style = RatingBarStyle.Fill(),
        onValueChange = {
-           rating = it
+           ratingOne = it
        },
        onRatingChanged = {
            Log.d("TAG", "onRatingChanged: $it")
@@ -45,31 +44,31 @@ dependencies {
    )
 ```
 
-Ratingbar composable can be customized using  [RatingBarConfig](https://github.com/a914-gowtham/compose-ratingbar/blob/main/ratingbar/src/main/java/com/gowtham/ratingbar/RatingBarConfig.kt) class as shown below:
+#### Other optional params:
 ```kotlin
-        RatingBarConfig()
-                .activeColor(Color.Yellow)
-                .hideInactiveStars(true)
-                .inactiveColor(Color.LightGray)
-                .inactiveBorderColor(Color.Blue)
-                .stepSize(StepSize.HALF)
-                .numStars(10)
-                .isIndicator(true)
-                .size(24.dp)
-                .horizontalPadding(6.dp)
-                .style(RatingBarStyle.HighLighted)
+  fun RatingBar(
+      value: Float,
+      modifier: Modifier = Modifier,
+      numOfStars: Int = 5,
+      size: Dp = 32.dp,
+      horizontalPadding: Dp = 6.dp,
+      isIndicator: Boolean = false,
+      stepSize: StepSize = StepSize.ONE,
+      hideInactiveStars: Boolean = false,
+      style: RatingBarStyle,
+      onValueChange: (Float) -> Unit,
+      onRatingChanged: (Float) -> Unit
+)
 ```
 
-## Customization
+## More Customization✨
 
 <img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/customization_demo.gif" width="340" height="260"/>
 
+Icon can be changed using ```painterEmpty``` ```painterFilled``` params.
 ```kotlin
         RatingBar(
             value = rating,
-            config = RatingBarConfig()
-                .horizontalPadding(2.dp)
-                .size(32.dp),
             painterEmpty = painterResource(id = R.drawable.icon_empty),
             painterFilled = painterResource(id = R.drawable.icon_filled),
             onValueChange = {
