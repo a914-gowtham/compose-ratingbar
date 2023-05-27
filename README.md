@@ -56,7 +56,7 @@ Ratingbar composable can be customized using  [RatingBarConfig](https://github.c
                 .numStars(10)
                 .isIndicator(true)
                 .size(24.dp)
-                .padding(6.dp)
+                .horizontalPadding(6.dp)
                 .style(RatingBarStyle.HighLighted)
 ```
 
@@ -68,7 +68,7 @@ Ratingbar composable can be customized using  [RatingBarConfig](https://github.c
         RatingBar(
             value = rating,
             config = RatingBarConfig()
-                .padding(2.dp)
+                .horizontalPadding(2.dp)
                 .size(32.dp),
             painterEmpty = painterResource(id = R.drawable.icon_empty),
             painterFilled = painterResource(id = R.drawable.icon_filled),
