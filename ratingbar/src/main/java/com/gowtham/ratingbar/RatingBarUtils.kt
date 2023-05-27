@@ -1,53 +1,35 @@
 package com.gowtham.ratingbar
 
-import kotlin.math.roundToInt
-
 object RatingBarUtils {
 
-    /**
-     *  @return selected or dragged stars
-     *  float value that should be selected
-     * */
     fun calculateStars(
-        draggedWidth: Float, width: Float,
-        numStars: Int, padding: Int
+        draggedX: Float,
+        paddingInPx: Float,
+        starSizeInPx: Float,
+        config: RatingBarConfig
     ): Float {
-        var overAllComposeWidth = width
-        val spacerWidth = numStars * (2 * padding)
 
-        //removing padding's width
-        overAllComposeWidth -= spacerWidth
-        return if (draggedWidth != 0f)
-            ((draggedWidth / overAllComposeWidth) * numStars)
-        else 0f
-    }
-
-
-    /**
-     *  @return rating stars float value depends on [StepSize]
-     *
-     *  case 1: if selected star value is 3.234345 and [StepSize] is StepSize.ONE,
-     *  this function will return 3.0.
-     *  more ex: [this] 3.634345, return value would be 3.
-     *  [this] 4.96367, return value would be 4.
-     *
-     *  case 2: if selected star value is 3.234345 and [StepSize] is StepSize.HALF,
-     *  this function will return 3.5. So, 3.5 stars to be selected.
-     *  more ex: [this] 3.634345, return value would be 4.
-     *
-     * */
-    fun Float.stepSized(stepSize: StepSize): Float {
-        return if (stepSize is StepSize.ONE)
-            this.roundToInt().toFloat()
-        else {
-            var value = this.toInt().toFloat()
-            if (this < value.plus(0.5)) {
-                if (this == 0f)
-                    return 0f
-                value = value.plus(0.5).toFloat()
-                value
-            } else
-                this.roundToInt().toFloat()
+        if(draggedX<=0){
+            return 0f
         }
+
+        val starWidthWithRightPadding = starSizeInPx + (2 * paddingInPx)
+        val halfStarWidth = starSizeInPx / 2
+        for (i in 1..config.numStars) {
+            if (draggedX < (i * starWidthWithRightPadding)) {
+                return if (config.stepSize is StepSize.ONE) {
+                    i.toFloat()
+                } else {
+                    val crossedStarsWidth = (i - 1) * starWidthWithRightPadding
+                    val remainingWidth = draggedX - crossedStarsWidth
+                    if (remainingWidth <= halfStarWidth) {
+                        i.toFloat().minus(0.5f)
+                    } else {
+                        i.toFloat()
+                    }
+                }
+            }
+        }
+        return 0f
     }
 }

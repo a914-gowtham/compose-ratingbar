@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -22,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import com.gowtham.ratingbar.RatingBarUtils.stepSized
 
 sealed interface StepSize {
     object ONE : StepSize
@@ -59,6 +59,15 @@ fun RatingBar(
     var rowSize by remember { mutableStateOf(Size.Zero) }
     var lastDraggedValue by remember { mutableStateOf(0f) }
     val direction = LocalLayoutDirection.current
+    val density = LocalDensity.current
+
+
+    val paddingInPx = remember(config.padding) {
+        with(density) { config.padding.toPx() }
+    }
+    val starSizeInPx = remember(config.size) {
+        with(density) { config.size.toPx() }
+    }
 
     Row(modifier = modifier
         .onSizeChanged { rowSize = it.toSize() }
@@ -82,47 +91,40 @@ fun RatingBar(
                     if (config.isIndicator || config.hideInactiveStars)
                         return@detectHorizontalDragGestures
                     change.consume()
-                    val x1 = change.position.x.coerceIn(0f, rowSize.width)
-                    val calculatedStars =
+                    val dragX = change.position.x.coerceIn(-1f,rowSize.width)
+                    var calculatedStars =
                         RatingBarUtils.calculateStars(
-                            x1,
-                            rowSize.width,
-                            config.numStars,
-                            config.padding.value.toInt()
+                            dragX,
+                            paddingInPx,
+                            starSizeInPx,
+                            config
                         )
-                    var newValue =
-                        calculatedStars
-                            .stepSized(config.stepSize)
-                            .coerceIn(0f, config.numStars.toFloat())
 
                     if (direction == LayoutDirection.Rtl)
-                        newValue = config.numStars - newValue
-                    onValueChange(newValue)
-                    lastDraggedValue = newValue
+                        calculatedStars = config.numStars - calculatedStars
+                    onValueChange(calculatedStars)
+                    lastDraggedValue = calculatedStars
                 }
             )
         }
         .pointerInteropFilter {
             if (config.isIndicator || config.hideInactiveStars)
                 return@pointerInteropFilter false
+            //handling when click events
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    //handling when click events
-                    val calculatedStars =
+                    val dragX = it.x.coerceIn(-1f,rowSize.width)
+                    var calculatedStars =
                         RatingBarUtils.calculateStars(
-                            it.x,
-                            rowSize.width,
-                            config.numStars,
-                            config.padding.value.toInt()
+                            dragX,
+                            paddingInPx,
+                            starSizeInPx,
+                            config
                         )
-                    var newValue =
-                        calculatedStars
-                            .stepSized(config.stepSize)
-                            .coerceIn(0f, config.numStars.toFloat())
                     if (direction == LayoutDirection.Rtl)
-                        newValue = config.numStars - newValue
-                    onValueChange(newValue)
-                    onRatingChanged(newValue)
+                        calculatedStars = config.numStars - calculatedStars
+                    onValueChange(calculatedStars)
+                    onRatingChanged(calculatedStars)
                 }
             }
             true
