@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
@@ -53,6 +54,8 @@ fun RatingBar(
     value: Float,
     modifier: Modifier = Modifier,
     config: RatingBarConfig = RatingBarConfig(),
+    painterEmpty: Painter?= null,
+    painterFilled: Painter?= null,
     onValueChange: (Float) -> Unit,
     onRatingChanged: (Float) -> Unit
 ) {
@@ -91,7 +94,7 @@ fun RatingBar(
                     if (config.isIndicator || config.hideInactiveStars)
                         return@detectHorizontalDragGestures
                     change.consume()
-                    val dragX = change.position.x.coerceIn(-1f,rowSize.width)
+                    val dragX = change.position.x.coerceIn(-1f, rowSize.width)
                     var calculatedStars =
                         RatingBarUtils.calculateStars(
                             dragX,
@@ -113,7 +116,7 @@ fun RatingBar(
             //handling when click events
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    val dragX = it.x.coerceIn(-1f,rowSize.width)
+                    val dragX = it.x.coerceIn(-1f, rowSize.width)
                     var calculatedStars =
                         RatingBarUtils.calculateStars(
                             dragX,
@@ -129,14 +132,16 @@ fun RatingBar(
             }
             true
         }) {
-        ComposeStars(value, config)
+        ComposeStars(value, config,painterEmpty,painterFilled)
     }
 }
 
 @Composable
 fun ComposeStars(
     value: Float,
-    config: RatingBarConfig
+    config: RatingBarConfig,
+    painterEmpty: Painter?,
+    painterFilled: Painter?
 ) {
 
     val ratingPerStar = 1f
@@ -161,6 +166,7 @@ fun ComposeStars(
             }
             if (config.hideInactiveStars && starRating == 0.0f)
                 break
+
             RatingStar(
                 fraction = starRating,
                 config = config,
@@ -170,7 +176,8 @@ fun ComposeStars(
                         end = if (i < config.numStars) config.padding else 0.dp
                     )
                     .size(size = config.size)
-                    .testTag("RatingStar")
+                    .testTag("RatingStar"),
+                painterEmpty, painterFilled
             )
         }
     }

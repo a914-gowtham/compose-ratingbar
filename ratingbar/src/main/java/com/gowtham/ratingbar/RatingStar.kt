@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -22,30 +24,43 @@ fun RatingStar(
     @FloatRange(from = 0.0, to = 1.0) fraction: Float,
     config: RatingBarConfig,
     modifier: Modifier = Modifier,
+    painterEmpty: Painter?,
+    painterFilled: Painter?
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
     Box(modifier = modifier) {
-        FilledStar(fraction, config.activeColor, isRtl, config.strokeWidth)
-        EmptyStar(fraction, config, isRtl, config.strokeWidth)
+        FilledStar(fraction, config.activeColor, isRtl, config.strokeWidth, painterFilled)
+        EmptyStar(fraction, config, isRtl, config.strokeWidth, painterEmpty)
     }
 }
 
 @Composable
-private fun FilledStar(fraction: Float, activeColor: Color, isRtl: Boolean, strokeWidth: Float) = Canvas(
+private fun FilledStar(
+    fraction: Float, activeColor: Color, isRtl: Boolean, strokeWidth: Float, painterFilled: Painter?
+) = Canvas(
     modifier = Modifier
         .fillMaxSize()
         .clip(
-            if (isRtl)
-                rtlFilledStarFractionalShape(fraction = fraction)
-            else
-                FractionalRectangleShape(0f, fraction)
+            if (isRtl) rtlFilledStarFractionalShape(fraction = fraction)
+            else FractionalRectangleShape(0f, fraction)
         )
 ) {
-    val path = Path().addStar(size)
 
-    drawPath(path, color = activeColor, style = Fill) // Filled Star
-    drawPath(path, color = activeColor, style = Stroke(width = strokeWidth)) // Border
+    if (painterFilled != null) {
+        with(painterFilled) {
+            draw(
+                size = Size(size.height, size.height),
+            )
+        }
+    } else {
+        val path = Path().addStar(size)
+
+        drawPath(path, color = activeColor, style = Fill) // Filled Star
+        drawPath(path, color = activeColor, style = Stroke(width = strokeWidth)) // Border
+    }
+
+
 }
 
 @Composable
@@ -53,23 +68,36 @@ private fun EmptyStar(
     fraction: Float,
     config: RatingBarConfig,
     isRtl: Boolean,
-    strokeWidth: Float
+    strokeWidth: Float,
+    painterEmpty: Painter?
 ) =
     Canvas(
         modifier = Modifier
             .fillMaxSize()
             .clip(
-                if (isRtl)
-                    rtlEmptyStarFractionalShape(fraction = fraction)
-                else
-                    FractionalRectangleShape(fraction, 1f)
+                if (isRtl) rtlEmptyStarFractionalShape(fraction = fraction)
+                else FractionalRectangleShape(fraction, 1f)
             )
     ) {
-        val path = Path().addStar(size)
-        if (config.style is RatingBarStyle.Normal)
-            drawPath(path, color = config.inactiveColor, style = Fill) // Border
-        else
-            drawPath(path, color = config.inactiveBorderColor, style = Stroke(width = strokeWidth)) // Border
+
+        if (painterEmpty != null) {
+            with(painterEmpty) {
+                draw(
+                    size = Size(size.height, size.height),
+                )
+            }
+        } else {
+            val path = Path().addStar(size)
+            if (config.style is RatingBarStyle.Normal) drawPath(
+                path,
+                color = config.inactiveColor,
+                style = Fill
+            ) // Border
+            else drawPath(
+                path, color = config.inactiveBorderColor, style = Stroke(width = strokeWidth)
+            ) // Border
+        }
+
     }
 
 @Preview(showBackground = true)
@@ -77,11 +105,11 @@ private fun EmptyStar(
 fun EmptyRatingStarPreview() {
     RatingStar(
         fraction = 0f,
-        config = RatingBarConfig()
-            .activeColor(Color(0xffffd740))
-            .inactiveColor(Color.Gray)
+        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveColor(Color.Gray)
             .style(RatingBarStyle.Normal),
-        modifier = Modifier.size(20.dp)
+        modifier = Modifier.size(20.dp),
+        null,
+        null
     )
 }
 
@@ -90,11 +118,11 @@ fun EmptyRatingStarPreview() {
 fun HighlightedWithBorderColorPreview() {
     RatingStar(
         fraction = 0.5f,
-        config = RatingBarConfig()
-            .activeColor(Color(0xffffd740))
-            .inactiveBorderColor(Color.Blue)
+        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveBorderColor(Color.Blue)
             .style(RatingBarStyle.HighLighted),
-        modifier = Modifier.size(20.dp)
+        modifier = Modifier.size(20.dp),
+        null,
+        null
     )
 }
 
@@ -103,11 +131,11 @@ fun HighlightedWithBorderColorPreview() {
 fun PartialRatingStarPreview() {
     RatingStar(
         fraction = 0.7f,
-        config = RatingBarConfig()
-            .activeColor(Color(0xffffd740))
-            .inactiveColor(Color(0xffffd740))
+        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveColor(Color(0xffffd740))
             .style(RatingBarStyle.Normal),
-        modifier = Modifier.size(20.dp)
+        modifier = Modifier.size(20.dp),
+        null,
+        null
     )
 }
 
@@ -116,11 +144,11 @@ fun PartialRatingStarPreview() {
 fun FullRatingStarPreview() {
     RatingStar(
         fraction = 1f,
-        config = RatingBarConfig()
-            .activeColor(Color(0xffffd740))
-            .inactiveColor(Color(0xffffd740))
+        config = RatingBarConfig().activeColor(Color(0xffffd740)).inactiveColor(Color(0xffffd740))
             .style(RatingBarStyle.Normal),
-        modifier = Modifier.size(20.dp)
+        modifier = Modifier.size(20.dp),
+        null,
+        null
     )
 }
 
