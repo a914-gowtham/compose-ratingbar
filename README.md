@@ -6,7 +6,7 @@ A ratingbar for jetpack compose
 [![](https://jitpack.io/v/a914-gowtham/compose-ratingbar/month.svg)](https://jitpack.io/#a914-gowtham/compose-ratingbar)
 
 
-<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/main/demo_1.gif" width="340" height="260"/>
+<img src="https://github.com/a914-gowtham/compose-ratingbar/blob/refactor/ratingbar_usage/demo_1.gif" width="340" height="260"/>
 
 Download
 --------
@@ -19,7 +19,7 @@ repositories {
 
 // App build.gradle
 dependencies {
-   implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.1'
+   implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.3'
   //mavenCentral
   // implementation 'io.github.a914-gowtham:compose-ratingbar:1.2.3'
 
@@ -44,7 +44,7 @@ dependencies {
    )
 ```
 
-#### Other available params:
+#### Other optional params:
 ```kotlin
   fun RatingBar(
       value: Float,
