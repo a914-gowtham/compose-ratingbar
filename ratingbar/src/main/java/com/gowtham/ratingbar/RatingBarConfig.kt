@@ -42,7 +42,7 @@ class RatingBarConfig {
     /**
      * padding between each star.
      */
-    var padding: Dp = 2.dp
+    var horizontalPadding: Dp = 2.dp
         private set
 
     /**
@@ -115,9 +115,9 @@ class RatingBarConfig {
      * Sets the padding between star.
      * @param value the value in Dp.
      */
-    fun padding(value: Dp): RatingBarConfig =
+    fun horizontalPadding(value: Dp): RatingBarConfig =
         apply {
-            padding = value
+            horizontalPadding = value
         }
 
     /**

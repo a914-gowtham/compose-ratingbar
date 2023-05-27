@@ -61,7 +61,7 @@ fun MainScreen() {
         RatingBar(
             value = rating,
             config = RatingBarConfig()
-                .padding(6.dp)
+                .horizontalPadding(6.dp)
                 .size(28.dp)
                 .stepSize(StepSize.HALF)
                 .style(RatingBarStyle.HighLighted),

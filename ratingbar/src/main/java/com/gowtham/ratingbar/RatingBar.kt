@@ -65,8 +65,8 @@ fun RatingBar(
     val density = LocalDensity.current
 
 
-    val paddingInPx = remember(config.padding) {
-        with(density) { config.padding.toPx() }
+    val paddingInPx = remember(config.horizontalPadding) {
+        with(density) { config.horizontalPadding.toPx() }
     }
     val starSizeInPx = remember(config.size) {
         with(density) { config.size.toPx() }
@@ -172,8 +172,8 @@ fun ComposeStars(
                 config = config,
                 modifier = Modifier
                     .padding(
-                        start = if (i > 1) config.padding else 0.dp,
-                        end = if (i < config.numStars) config.padding else 0.dp
+                        start = if (i > 1) config.horizontalPadding else 0.dp,
+                        end = if (i < config.numStars) config.horizontalPadding else 0.dp
                     )
                     .size(size = config.size)
                     .testTag("RatingStar"),

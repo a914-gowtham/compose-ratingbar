@@ -4,7 +4,7 @@ object RatingBarUtils {
 
     fun calculateStars(
         draggedX: Float,
-        paddingInPx: Float,
+        horizontalPaddingInPx: Float,
         starSizeInPx: Float,
         config: RatingBarConfig
     ): Float {
@@ -13,7 +13,7 @@ object RatingBarUtils {
             return 0f
         }
 
-        val starWidthWithRightPadding = starSizeInPx + (2 * paddingInPx)
+        val starWidthWithRightPadding = starSizeInPx + (2 * horizontalPaddingInPx)
         val halfStarWidth = starSizeInPx / 2
         for (i in 1..config.numStars) {
             if (draggedX < (i * starWidthWithRightPadding)) {
