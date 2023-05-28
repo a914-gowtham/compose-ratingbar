@@ -62,7 +62,7 @@ var SemanticsPropertyReceiver.starRating by StarRatingKey
  * @param value is current selected rating count
  * @param numOfStars count of stars to be shown.
  * @param size size for each star
- * @param horizontalPadding padding between each star.
+ * @param spaceBetween padding between each star.
  * @param isIndicator isIndicator Whether this rating bar is only an indicator or the value is changeable on user interaction.
  * @param stepSize Can be [StepSize.ONE] or [StepSize.HALF]
  * @param hideInactiveStars Whether the inactive stars should be hidden.
@@ -76,7 +76,7 @@ internal fun RatingBar(
     modifier: Modifier = Modifier,
     numOfStars: Int = 5,
     size: Dp = 32.dp,
-    horizontalPadding: Dp = 6.dp,
+    spaceBetween: Dp = 6.dp,
     isIndicator: Boolean = false,
     stepSize: StepSize = StepSize.ONE,
     hideInactiveStars: Boolean = false,
@@ -93,7 +93,7 @@ internal fun RatingBar(
 
 
     val paddingInPx = remember {
-        with(density) { horizontalPadding.toPx() }
+        with(density) { spaceBetween.toPx() }
     }
     val starSizeInPx = remember() {
         with(density) { size.toPx() }
@@ -161,7 +161,7 @@ internal fun RatingBar(
             value,
             numOfStars,
             size,
-            horizontalPadding,
+            spaceBetween,
             hideInactiveStars,
             style = style,
             painterEmpty,
@@ -176,7 +176,7 @@ fun RatingBar(
     modifier: Modifier = Modifier,
     numOfStars: Int = 5,
     size: Dp = 32.dp,
-    horizontalPadding: Dp = 6.dp,
+    spaceBetween: Dp = 6.dp,
     isIndicator: Boolean = false,
     stepSize: StepSize = StepSize.ONE,
     hideInactiveStars: Boolean = false,
@@ -189,7 +189,7 @@ fun RatingBar(
         modifier = modifier,
         numOfStars = numOfStars,
         size = size,
-        horizontalPadding = horizontalPadding,
+        spaceBetween = spaceBetween,
         isIndicator = isIndicator,
         stepSize = stepSize,
         hideInactiveStars = hideInactiveStars,
@@ -207,7 +207,7 @@ fun RatingBar(
     modifier: Modifier = Modifier,
     numOfStars: Int = 5,
     size: Dp = 32.dp,
-    horizontalPadding: Dp = 6.dp,
+    spaceBetween: Dp = 6.dp,
     isIndicator: Boolean = false,
     stepSize: StepSize = StepSize.ONE,
     hideInactiveStars: Boolean = false,
@@ -221,7 +221,7 @@ fun RatingBar(
         modifier = modifier,
         numOfStars = numOfStars,
         size = size,
-        horizontalPadding = horizontalPadding,
+        spaceBetween = spaceBetween,
         isIndicator = isIndicator,
         stepSize = stepSize,
         hideInactiveStars = hideInactiveStars,
@@ -238,7 +238,7 @@ fun ComposeStars(
     value: Float,
     numOfStars: Int,
     size: Dp,
-    horizontalPadding: Dp,
+    spaceBetween: Dp,
     hideInactiveStars: Boolean,
     style: RatingBarStyle,
     painterEmpty: Painter?,
@@ -275,8 +275,8 @@ fun ComposeStars(
                 style = style,
                 modifier = Modifier
                     .padding(
-                        start = if (i > 1) horizontalPadding else 0.dp,
-                        end = if (i < numOfStars) horizontalPadding else 0.dp
+                        start = if (i > 1) spaceBetween else 0.dp,
+                        end = if (i < numOfStars) spaceBetween else 0.dp
                     )
                     .size(size = size)
                     .testTag("RatingStar"),

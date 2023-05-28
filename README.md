@@ -51,7 +51,7 @@ dependencies {
       modifier: Modifier = Modifier,
       numOfStars: Int = 5,
       size: Dp = 32.dp,
-      horizontalPadding: Dp = 6.dp,
+      spaceBetween: Dp = 6.dp,
       isIndicator: Boolean = false,
       stepSize: StepSize = StepSize.ONE,
       hideInactiveStars: Boolean = false,
