@@ -34,9 +34,8 @@ dependencies {
 
    RatingBar(
        value = rating,
-       style = RatingBarStyle.Fill(),
        onValueChange = {
-           ratingOne = it
+           rating = it
        },
        onRatingChanged = {
            Log.d("TAG", "onRatingChanged: $it")
