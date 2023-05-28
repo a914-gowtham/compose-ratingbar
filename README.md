@@ -34,9 +34,8 @@ dependencies {
 
    RatingBar(
        value = rating,
-       style = RatingBarStyle.Fill(),
        onValueChange = {
-           ratingOne = it
+           rating = it
        },
        onRatingChanged = {
            Log.d("TAG", "onRatingChanged: $it")
@@ -80,6 +79,7 @@ Icon can be changed using ```painterEmpty``` ```painterFilled``` params.
         )
 ```
 ## Library Info
+* Forked from [compose-rating-bar](https://github.com/jsachica/compose-rating-bar)
 * Current version of the library only supports Stepsize 1f and 0.5f when click or drag. However, Initial Rating value could be any float value like 3.8 etc.
 
 ## Show some ❤ and support
