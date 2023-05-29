@@ -34,6 +34,7 @@ dependencies {
 
    RatingBar(
        value = rating,
+       style = RatingBarStyle.Fill(),
        onValueChange = {
            rating = it
        },
