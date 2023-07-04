@@ -42,6 +42,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler
     }
+    namespace 'com.gowtham.ratingbarapp'
 }
 
 dependencies {

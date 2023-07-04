@@ -6,6 +6,7 @@ plugins {
 }
 
 afterEvaluate {
+    println("Components: RatingBar: " + components*.name)
     publishing {
         publications {
             // Creates a Maven publication called "release".
@@ -62,6 +63,8 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler
     }
+    namespace 'com.gowtham.ratingbar'
+
 }
 
 dependencies {
