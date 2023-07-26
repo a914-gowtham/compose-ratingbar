@@ -59,3 +59,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
+
+afterEvaluate {
+    publishing {
+        publications.withType<MavenPublication> {
+            pom {
+                groupId = "com.gowtham.composeratingbar"
+                artifactId = "compose-ratingbar-multiplatform"
+                version = "1.0.0"
+            }
+        }
+    }
+}
