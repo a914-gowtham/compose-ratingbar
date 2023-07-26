@@ -49,7 +49,7 @@ android {
     namespace = "com.gowtham.compose_ratingbar_multiplatform"
     compileSdk = 33
     defaultConfig {
-        minSdk = 24
+        minSdk = 21
     }
 
     compileOptions {
