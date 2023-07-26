@@ -3,18 +3,20 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("maven-publish")
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     targetHierarchy.default()
 
-
     android()
 
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
+    jvm()
 
     cocoapods {
         summary = "Some description for the Shared Module"
