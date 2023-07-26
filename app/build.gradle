@@ -6,6 +6,8 @@ plugins {
 android {
     compileSdk rootProject.compileSdk
 
+    namespace("com.gowtham.compose_ratingbar")
+
     defaultConfig {
         applicationId "com.gowtham.compose_ratingbar"
         minSdk rootProject.minSdk
@@ -42,7 +44,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler
     }
-    namespace 'com.gowtham.ratingbarapp'
 }
 
 dependencies {
