@@ -25,4 +25,4 @@ signing.password=Gowthamsj10
 signing.secretKeyRingFile=/home/gowtham/gpg-keys/secring.gpg
 mavenCentralUsername=Gowtham24
 mavenCentralPassword=ENZ2QjVEWB%Sfx.
-*/
+*/ include ':ratingbar-multiplatform'
