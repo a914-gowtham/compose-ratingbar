@@ -13,8 +13,6 @@ class FractionalRectangleShape(
     private val startFraction: Float,
     private val endFraction: Float
 ) : Shape {
-    val some=(0.0f..0.5f)
-
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
