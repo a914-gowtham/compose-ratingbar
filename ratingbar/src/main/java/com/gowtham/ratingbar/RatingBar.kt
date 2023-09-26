@@ -1,8 +1,8 @@
 package com.gowtham.ratingbar
 
 import android.util.Log
-import android.view.MotionEvent
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,7 +13,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -136,26 +135,23 @@ internal fun RatingBar(
                 }
             )
         }
-        .pointerInteropFilter {
-            if (isIndicator || hideInactiveStars)
-                return@pointerInteropFilter false
+        .pointerInput(Unit) {
             //handling when click events
-            when (it.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    val dragX = it.x.coerceIn(-1f, rowSize.width)
-                    var calculatedStars =
-                        RatingBarUtils.calculateStars(
-                            dragX,
-                            paddingInPx,
-                            numOfStars, stepSize, starSizeInPx
-                        )
-                    if (direction == LayoutDirection.Rtl)
-                        calculatedStars = numOfStars - calculatedStars
-                    onValueChange(calculatedStars)
-                    onRatingChanged(calculatedStars)
-                }
-            }
-            true
+            detectTapGestures(onTap = {
+                if (isIndicator || hideInactiveStars)
+                    return@detectTapGestures
+                val dragX = it.x.coerceIn(-1f, rowSize.width)
+                var calculatedStars =
+                    RatingBarUtils.calculateStars(
+                        dragX,
+                        paddingInPx,
+                        numOfStars, stepSize, starSizeInPx
+                    )
+                if (direction == LayoutDirection.Rtl)
+                    calculatedStars = numOfStars - calculatedStars
+                onValueChange(calculatedStars)
+                onRatingChanged(calculatedStars)
+            })
         }) {
         ComposeStars(
             value,
