@@ -13,7 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -53,8 +53,8 @@ fun MyApp() {
 
 @Composable
 fun MainScreen() {
-    var ratingOne: Float by rememberSaveable { mutableStateOf(1.4f) }
-    var ratingTwo: Float by rememberSaveable { mutableStateOf(initialRating) }
+    var ratingOne: Float by rememberSaveable { mutableFloatStateOf(1.4f) }
+    var ratingTwo: Float by rememberSaveable { mutableFloatStateOf(initialRating) }
 
     Column(
         modifier = Modifier.fillMaxSize(),

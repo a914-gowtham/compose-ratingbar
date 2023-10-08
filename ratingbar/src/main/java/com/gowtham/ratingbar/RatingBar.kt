@@ -127,9 +127,11 @@ internal fun RatingBar(
                             paddingInPx,
                             numOfStars, stepSize, starSizeInPx
                         )
-
-                    if (direction == LayoutDirection.Rtl)
-                        calculatedStars = numOfStars - calculatedStars
+                    if (direction == LayoutDirection.Rtl) {
+                        // calculatedStars -> reversed
+                        // 1 -> 5, 2 -> 4, 3 -> 3, 4 -> 2,5 -> 1
+                        calculatedStars = (numOfStars - calculatedStars)
+                    }
                     onValueChange(calculatedStars)
                     lastDraggedValue = calculatedStars
                 }
@@ -147,8 +149,11 @@ internal fun RatingBar(
                         paddingInPx,
                         numOfStars, stepSize, starSizeInPx
                     )
-                if (direction == LayoutDirection.Rtl)
-                    calculatedStars = numOfStars - calculatedStars
+                if (direction == LayoutDirection.Rtl) {
+                    // calculatedStars -> reversed
+                    // 1 -> 5, 2 -> 4, 3 -> 3, 4 -> 2,5 -> 1
+                    calculatedStars = (numOfStars - calculatedStars) + 1
+                }
                 onValueChange(calculatedStars)
                 onRatingChanged(calculatedStars)
             })
