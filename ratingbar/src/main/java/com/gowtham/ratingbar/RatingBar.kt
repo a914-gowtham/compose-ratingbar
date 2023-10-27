@@ -101,7 +101,7 @@ internal fun RatingBar(
     Row(modifier = modifier
         .onSizeChanged { rowSize = it.toSize() }
         .pointerInput(
-            Unit
+            onValueChange
         ) {
             //handling dragging events
             detectHorizontalDragGestures(
@@ -137,7 +137,7 @@ internal fun RatingBar(
                 }
             )
         }
-        .pointerInput(Unit) {
+        .pointerInput(onValueChange) {
             //handling when click events
             detectTapGestures(onTap = {
                 if (isIndicator || hideInactiveStars)
