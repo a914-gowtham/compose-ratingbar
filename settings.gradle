@@ -18,8 +18,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "Compose-RatingBar"
 include ':app'
-include ':ratingbar'
 /*
+include ':ratingbar'
+
 signing.keyId=AEAEDCCC
 signing.password=Gowthamsj10
 signing.secretKeyRingFile=/home/gowtham/gpg-keys/secring.gpg
