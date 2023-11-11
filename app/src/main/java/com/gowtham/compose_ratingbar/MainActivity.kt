@@ -23,10 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gowtham.compose_ratingbar.MainActivity.Companion.initialRating
 import com.gowtham.compose_ratingbar.ui.theme.JetpackComposeTheme
-import com.gowtham.compose_ratingbar_multiplatform.RatingBar
-import com.gowtham.compose_ratingbar_multiplatform.RatingBarStyle
-import com.gowtham.compose_ratingbar_multiplatform.StepSize
-
+import com.gowtham.ratingbar.RatingBar
+import com.gowtham.ratingbar.RatingBarStyle
+import com.gowtham.ratingbar.StepSize
 
 class MainActivity : ComponentActivity() {
 
