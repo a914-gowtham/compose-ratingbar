@@ -98,6 +98,8 @@ internal fun RatingBar(
         with(density) { size.toPx() }
     }
 
+    var lastPressedStar= 0f
+
     Row(modifier = modifier
         .onSizeChanged { rowSize = it.toSize() }
         .pointerInput(
@@ -139,7 +141,7 @@ internal fun RatingBar(
         }
         .pointerInput(onValueChange) {
             //handling when click events
-            detectTapGestures(onTap = {
+            detectTapGestures(onPress = {
                 if (isIndicator || hideInactiveStars)
                     return@detectTapGestures
                 val dragX = it.x.coerceIn(-1f, rowSize.width)
@@ -155,7 +157,9 @@ internal fun RatingBar(
                     calculatedStars = (numOfStars - calculatedStars) + 1
                 }
                 onValueChange(calculatedStars)
-                onRatingChanged(calculatedStars)
+                lastPressedStar= calculatedStars
+            }, onTap = {
+                onRatingChanged(lastPressedStar)
             })
         }) {
         ComposeStars(
