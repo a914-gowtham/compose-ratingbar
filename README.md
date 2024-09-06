@@ -1,5 +1,6 @@
 # Compose-Ratingbar
 A ratingbar for jetpack compose 
+* Forked from [compose-rating-bar](https://github.com/jsachica/compose-rating-bar)
 
 [![](https://jitpack.io/v/a914-gowtham/compose-ratingbar.svg)](https://jitpack.io/#a914-gowtham/compose-ratingbar)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.a914-gowtham/compose-ratingbar.svg?label=mavenCentral)](https://search.maven.org/artifact/io.github.a914-gowtham/compose-ratingbar/1.1.0/aar)
@@ -80,7 +81,6 @@ Icon can be changed using ```painterEmpty``` ```painterFilled``` params.
         )
 ```
 ## Library Info
-* Forked from [compose-rating-bar](https://github.com/jsachica/compose-rating-bar)
 * Current version of the library only supports Stepsize 1f and 0.5f when click or drag. However, Initial Rating value could be any float value like 3.8 etc.
 
 ## Show some ❤ and support
