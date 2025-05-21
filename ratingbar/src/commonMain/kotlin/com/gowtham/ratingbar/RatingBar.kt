@@ -1,6 +1,5 @@
 package com.gowtham.ratingbar
 
-import android.util.Log
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Row
@@ -302,6 +301,6 @@ fun RatingBarPreview() {
             rating = it
         }
     ) {
-        Log.d("TAG", "RatingBarPreview: $it")
+        // Log.d("TAG", "RatingBarPreview: $it") // Removed for multiplatform compatibility
     }
 }

@@ -1,6 +1,5 @@
 package com.gowtham.ratingbar
 
-import androidx.annotation.FloatRange
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun RatingStar(
-    @FloatRange(from = 0.0, to = 1.0) fraction: Float,
+    fraction: Float,
     modifier: Modifier = Modifier,
     style: RatingBarStyle,
     painterEmpty: Painter?,

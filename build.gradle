@@ -6,20 +6,23 @@ buildscript {
         minSdk = 21
         targetSdk = 34
 
-        compose_version = '1.5.1'
-        compose_compiler = '1.5.3'
+        kotlin_version = '1.9.23'
+        compose_multiplatform_version = '1.8.1'
 
     }
     repositories {
         google()
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }    
 }
 
 plugins {
     id 'com.android.application' version '8.1.1' apply false
     id 'com.android.library' version '8.1.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.9.10'  apply false
+    id 'org.jetbrains.kotlin.android' version kotlin_version apply false
+    id 'org.jetbrains.kotlin.multiplatform' version kotlin_version apply false
+    id 'org.jetbrains.compose' version compose_multiplatform_version apply false
 }
 
 task clean(type: Delete) {

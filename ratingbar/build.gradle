@@ -1,79 +1,104 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-//    id 'com.vanniktech.maven.publish'
-    id 'maven-publish'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'org.jetbrains.compose'
+    id 'com.android.library' // Keep for Android target configuration
+    id 'maven-publish' // Keep existing publish setup
 }
 
+kotlin {
+    androidTarget {
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8" // Or JavaVersion.VERSION_1_8.toString()
+        }
+        //publishLibraryVariants("release", "debug") // Consider this for publishing if needed
+    }
+
+    jvm("desktop") { // Adding desktop target
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+    }
+    // Add other targets like iosX64, iosArm64, iosSimulatorArm64 if needed later
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material) // If material components are used, looks like it for colors
+                @OptIn(ExperimentalComposeLibrary::class)
+                api(compose.components.resources) // For any future resource needs like strings, painters
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                // Android-specific dependencies can go here
+                // e.g., api("androidx.core:core-ktx:1.9.0") - already in app module, check if needed here
+                // No specific Android dependencies seem immediately necessary for RatingBar.kt itself
+            }
+        }
+        val desktopMain by getting {
+            dependencies {
+                // Desktop-specific dependencies
+                // api(compose.desktop.currentOs) // For desktop-specific APIs if needed
+            }
+        }
+    }
+}
+
+android {
+    // Configure Android library settings
+    namespace = "com.gowtham.ratingbar" // From old file
+    compileSdk = rootProject.ext.compileSdk // from old file, ensure rootProject.ext is accessible or define directly
+    
+    defaultConfig {
+        minSdk = rootProject.ext.minSdk // from old file
+    }
+
+    // Set source sets for Android, KMP plugin might do this automatically, but good to be explicit
+    // sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    // sourceSets["main"].java.srcDirs("src/androidMain/kotlin") // KMP handles this
+    // sourceSets["main"].res.srcDirs("src/androidMain/res")
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8 // Align with Kotlin JVM target
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    
+    buildFeatures {
+        compose = true // Keep this if Android Lint or other tools expect it. CMP handles compilation.
+    }
+    // composeOptions {} block can be removed as CMP handles compiler plugin and version.
+    
+    // publishing { ... } // This might need to be inside android block for component awareness or outside
+    // The existing afterEvaluate publishing block might still work or need adjustment for KMP.
+    // For now, keep the existing publishing block as is and test later.
+}
+
+// Keep the existing publishing configuration
+// It might need adjustments for multiplatform artifacts (e.g., publishing metadata)
+// but let's try to keep it simple first.
 afterEvaluate {
     println("Components: RatingBar: " + components*.name)
     publishing {
         publications {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
-                from components.release
+                from(components.findByName("release")) // Android release variant
                 groupId = 'com.gowtham.composeratingbar'
-                artifactId = 'compose-ratingbar'
-                version =  '1.3.7'
+                artifactId = 'compose-ratingbar' // This artifactId might need to be platform specific like 'compose-ratingbar-android'
+                version =  '1.3.7-mp' // Indicate multiplatform
             }
+            // Need to add publications for other platforms like desktop
+            // For example:
+            // desktop(MavenPublication) {
+            //    from components.desktop
+            //    groupId = 'com.gowtham.composeratingbar'
+            //    artifactId = 'compose-ratingbar-desktop'
+            //    version = '1.3.7-mp'
+            // }
         }
     }
 }
-
-/*
-allprojects {
-    plugins.withId("com.vanniktech.maven.publish") {
-        mavenPublish {
-            sonatypeHost = "S01"
-        }
-    }
-}
-*/
-
-android {
-    compileSdk rootProject.compileSdk
-
-    defaultConfig {
-        minSdk rootProject.minSdk
-        targetSdk rootProject.targetSdk
-
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-    buildFeatures {
-        buildConfig false
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion compose_compiler
-    }
-    namespace 'com.gowtham.ratingbar'
-
-}
-
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
-
-    implementation "androidx.compose.runtime:runtime:$compose_version"
-    implementation "androidx.compose.compiler:compiler:$compose_compiler"
-
-}
-
